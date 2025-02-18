@@ -19,8 +19,8 @@ class GymMember(models.Model):
     joined = models.DateTimeField(auto_now_add=True)
 
 
-class BeltBJJ(models.model):
+class BeltBJJ(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     colours = [("white", "White"), ("blue", "Blue"), ("purple", "Purple"), ("brown", "Brown"), ("black", "Black")]
-    belt_colour = models.CharField(choices=colours)
+    belt_colour = models.CharField(choices=colours, default="white", max_length=6)
     stripes = models.IntegerField(default=0)
