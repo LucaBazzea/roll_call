@@ -19,6 +19,21 @@ class GymMember(models.Model):
     joined = models.DateTimeField(auto_now_add=True)
 
 
+class GymTrainingArea(models.Model):
+    name = models.CharField(max_length=100)
+    colour_hex = models.CharField(max_length=7)
+
+
+class ScheduleWeekly(models.Model):
+    gym = models.ForeignKey(Gym, on_delete=models.PROTECT)
+    days = [("mon", "Monday"), ("tue", "Tuesday"), ("wed", "Wednesday"), ("thu", "Thursday"), ("fri", "Friday"), ("sat", "Saturday"), ("sun", "Sunday")]
+    day = models.CharField(choices=days, max_length=9)
+    time_start = models.TimeField()
+    time_end = models.TimeField()
+    notes = models.TextField()
+    training_area = models.ForeignKey(GymTrainingArea, null=True, on_delete=models.PROTECT)
+
+
 class BeltBJJ(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     belt_given_by = models.CharField(null=True, max_length=100)
