@@ -6,7 +6,7 @@ db.sqlite3
 # Output
 .output
 .wrangler
-/.svelte-kit
+.svelte-kit
 /build
 
 # OS
