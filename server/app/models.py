@@ -26,6 +26,7 @@ class GymTrainingArea(models.Model):
 
 class ScheduleWeekly(models.Model):
     gym = models.ForeignKey(Gym, on_delete=models.PROTECT)
+    coach = models.ForeignKey(User, null=True, on_delete=models.PROTECT)
     days = [("mon", "Monday"), ("tue", "Tuesday"), ("wed", "Wednesday"), ("thu", "Thursday"), ("fri", "Friday"), ("sat", "Saturday"), ("sun", "Sunday")]
     day = models.CharField(choices=days, max_length=9)
     time_start = models.TimeField()
