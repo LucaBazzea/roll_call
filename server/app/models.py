@@ -21,7 +21,6 @@ class GymMember(models.Model):
 
 class GymTrainingArea(models.Model):
     name = models.CharField(max_length=100)
-    colour_hex = models.CharField(max_length=7)
 
 
 class Class(models.Model):
@@ -31,6 +30,7 @@ class Class(models.Model):
     day = models.CharField(choices=days, max_length=9)
     time_start = models.TimeField()
     time_end = models.TimeField()
+    colour_hex = models.CharField(max_length=7)
     notes = models.TextField()
     training_area = models.ForeignKey(GymTrainingArea, null=True, on_delete=models.PROTECT)
     cancelled = models.BooleanField(default=False)
