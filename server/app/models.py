@@ -24,7 +24,7 @@ class GymTrainingArea(models.Model):
     colour_hex = models.CharField(max_length=7)
 
 
-class ScheduleWeekly(models.Model):
+class Class(models.Model):
     gym = models.ForeignKey(Gym, on_delete=models.PROTECT)
     coach = models.ForeignKey(User, null=True, on_delete=models.PROTECT)
     days = [("mon", "Monday"), ("tue", "Tuesday"), ("wed", "Wednesday"), ("thu", "Thursday"), ("fri", "Friday"), ("sat", "Saturday"), ("sun", "Sunday")]
@@ -33,6 +33,7 @@ class ScheduleWeekly(models.Model):
     time_end = models.TimeField()
     notes = models.TextField()
     training_area = models.ForeignKey(GymTrainingArea, null=True, on_delete=models.PROTECT)
+    cancelled = models.BooleanField(default=False)
 
 
 class BeltBJJ(models.Model):
