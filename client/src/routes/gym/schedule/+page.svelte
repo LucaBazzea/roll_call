@@ -1,3 +1,21 @@
+<script>
+	let schedule = {
+		mon: [
+			{ start: '11:00', end: '12:30' },
+			{ start: '18:00', end: '19:30' }
+		],
+		tue: [],
+		wed: [],
+		thu: [
+			{ start: '16:00', end: '17:30' },
+			{ start: '18:00', end: '19:30' }
+		],
+		fri: [],
+		sat: [],
+		sun: []
+	};
+</script>
+
 <div class="flex h-screen flex-row text-center">
 	<div class="flex w-12 flex-col border-r-2 border-gray-500">
 		<div class="h-[300px]"></div>
