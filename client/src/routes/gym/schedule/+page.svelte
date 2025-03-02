@@ -14,127 +14,43 @@
 		sat: [],
 		sun: []
 	};
+
+	function formatTime(time) {
+		const [hours, minutes] = time.split(':');
+		return `${parseInt(hours)}:${minutes}`;
+	}
+
+	function getDuration(start, end) {
+		const [startHours, startMinutes] = start.split(':').map(Number);
+		const [endHours, endMinutes] = end.split(':').map(Number);
+		const durationMinutes = endHours * 60 + endMinutes - (startHours * 60 + startMinutes);
+		return `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`;
+	}
 </script>
 
-<div class="flex h-screen flex-row text-center">
-	<div class="flex w-12 flex-col border-r-2 border-gray-500">
-		<div class="h-[300px]"></div>
-		<div class="size-full border-2 border-gray-500">1</div>
-		<div class="size-full border-2 border-gray-500">2</div>
-		<div class="size-full border-2 border-gray-500">3</div>
-		<div class="size-full border-2 border-gray-500">4</div>
-		<div class="size-full border-2 border-gray-500">5</div>
-		<div class="size-full border-2 border-gray-500">6</div>
-		<div class="size-full border-2 border-gray-500">7</div>
-		<div class="size-full border-2 border-gray-500">8</div>
-		<div class="size-full border-2 border-gray-500">9</div>
-		<div class="size-full border-2 border-gray-500">10</div>
-		<div class="size-full border-2 border-gray-500">11</div>
-		<div class="size-full border-2 border-gray-500">12</div>
-	</div>
-	<div id="mon" class="flex w-1/6 flex-col">
-		<h1>Mon</h1>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-	</div>
-	<div id="tue" class="flex w-1/6 flex-col">
-		<div>Tue</div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-	</div>
-	<div id="wed" class="flex w-1/6 flex-col">
-		<div>Wed</div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-	</div>
-	<div id="thu" class="flex w-1/6 flex-col">
-		<div>Thu</div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-	</div>
-	<div id="fri" class="flex w-1/6 flex-col">
-		<div>Fri</div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-	</div>
-	<div id="sat" class="flex w-1/6 flex-col">
-		<div>Sat</div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-	</div>
-	<div id="sun" class="flex w-1/6 flex-col">
-		<div>Sun</div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-		<div class="size-full border-2 border-gray-500"></div>
-	</div>
+<div class="grid grid-cols-8 gap-4 text-sm">
+	<div class="col-span-1 font-bold">Time</div>
+	<div class="col-span-1 font-bold">Monday</div>
+	<div class="col-span-1 font-bold">Tuesday</div>
+	<div class="col-span-1 font-bold">Wednesday</div>
+	<div class="col-span-1 font-bold">Thursday</div>
+	<div class="col-span-1 font-bold">Friday</div>
+	<div class="col-span-1 font-bold">Saturday</div>
+	<div class="col-span-1 font-bold">Sunday</div>
+
+	{#each Array.from({ length: 24 }, (_, i) => i) as hour}
+		<div class="col-span-1 font-bold">{formatTime(`${hour}:00`)}</div>
+		{#each Object.keys(schedule) as day}
+			<div class="col-span-1">
+				{#each schedule[day] as event}
+					{#if event.start.split(':')[0] === `${hour}`}
+						<div class="mb-2 rounded-md bg-blue-200 p-2">
+							<div class="font-bold">{formatTime(event.start)} - {formatTime(event.end)}</div>
+							<div>{getDuration(event.start, event.end)}</div>
+						</div>
+					{/if}
+				{/each}
+			</div>
+		{/each}
+	{/each}
 </div>
