@@ -45,23 +45,29 @@
 	{#each Array.from({ length: 24 }, (_, i) => i) as hour}
 		<div class="col-span-1 font-bold">{formatTime(`${hour}:00`)}</div>
 		{#each Object.keys(schedule) as day}
-			<div class="col-span-1 border-1 border-gray-300">
-				{#each schedule[day] as event}
-					{#if event.start.split(':')[0] === `${hour}` || event.end.split(':')[0] === `${hour}`}
-						{#if event.start.split(':')[0] === `${hour}`}
-							<button on:click={eventModal} class="bg-blue-200">
-								<div class="font-bold">{event.title}</div>
-								<div class="font-bold">{formatTime(event.start)} - {formatTime(event.end)}</div>
-							</button>
+			{#if schedule[day].some((event) => event.start.startsWith(`${hour}:`) || event.end.startsWith(`${hour}:`))}
+				<div class="col-span-1 border-1 border-blue-300">
+					{#each schedule[day] as event}
+						{#if event.start.split(':')[0] === `${hour}` || event.end.split(':')[0] === `${hour}`}
+							{#if event.start.split(':')[0] === `${hour}`}
+								<button on:click={eventModal} class="w-full bg-blue-200">
+									<div class="font-bold">{event.title}</div>
+									<div class="font-bold">{formatTime(event.start)} - {formatTime(event.end)}</div>
+								</button>
+							{/if}
+							{#if event.end.split(':')[0] === `${hour}`}
+								<button
+									on:click={eventModal}
+									class="size-full min-h-8 bg-blue-200"
+									aria-label="end-time-block"
+								></button>
+							{/if}
 						{/if}
-						{#if event.end.split(':')[0] === `${hour}`}
-							<div class="bg-blue-100">
-								<div class="font-bold">End: {formatTime(event.end)}</div>
-							</div>
-						{/if}
-					{/if}
-				{/each}
-			</div>
+					{/each}
+				</div>
+			{:else}
+				<div class="col-span-1 border-1 border-gray-300"></div>
+			{/if}
 		{/each}
 	{/each}
 </div>
