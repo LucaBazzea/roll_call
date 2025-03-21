@@ -1,14 +1,14 @@
 <script>
 	let schedule = {
 		mon: [
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: 'blue' },
-			{ title: 'No-gi', start: '18:00', end: '19:30', colour: 'green' }
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456' },
+			{ title: 'No-gi', start: '18:00', end: '19:30', colour: '#f456' }
 		],
 		tue: [],
 		wed: [],
 		thu: [
-			{ title: 'No-gi', start: '16:00', end: '17:30', colour: 'pink' },
-			{ title: 'No-gi', start: '18:00', end: '19:30', colour: 'blue' }
+			{ title: 'No-gi', start: '16:00', end: '17:30', colour: '#98fb98' },
+			{ title: 'No-gi', start: '18:00', end: '19:30', colour: '#f456' }
 		],
 		fri: [],
 		sat: [],
@@ -50,7 +50,7 @@
 					{#each schedule[day] as event}
 						{#if event.start.split(':')[0] === `${hour}` || event.end.split(':')[0] === `${hour}`}
 							{#if event.start.split(':')[0] === `${hour}`}
-								<button on:click={eventModal} class="w-full bg-{event.colour}-200">
+								<button on:click={eventModal} class="w-full bg-blue-200">
 									<div class="font-bold">{event.title}</div>
 									<div class="font-bold">{formatTime(event.start)} - {formatTime(event.end)}</div>
 								</button>
@@ -58,7 +58,7 @@
 							{#if event.end.split(':')[0] === `${hour}`}
 								<button
 									on:click={eventModal}
-									class="size-full min-h-8 bg-{event.colour}-200"
+									class="size-full min-h-8 bg-blue-200"
 									aria-label="end-time-block"
 								></button>
 							{/if}
