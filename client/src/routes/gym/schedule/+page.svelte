@@ -15,11 +15,10 @@
 		sun: []
 	};
 
-	let eventInfoModal;
-	let eventTitle = null;
-	let eventStart = null;
-	let eventEnd = null;
-	let eventColour = null;
+	let eventTitle;
+	let eventStart;
+	let eventEnd;
+	let eventColour;
 
 	function formatTime(time) {
 		const [hours, minutes] = time.split(':');
@@ -34,18 +33,16 @@
 	}
 
 	function eventModal(title, start, end, colour) {
-		console.log('eventModal');
-
 		eventTitle = title;
 		eventStart = start;
 		eventEnd = end;
 		eventColour = colour;
 
-		eventInfoModel.showModal();
+		eventInfoModal.showModal();
 	}
 </script>
 
-<dialog class="modal" id="eventInfoModel">
+<dialog class="modal" id="eventInfoModal">
 	<div class="modal-box">
 		<form method="dialog">
 			<button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2">✕</button>
