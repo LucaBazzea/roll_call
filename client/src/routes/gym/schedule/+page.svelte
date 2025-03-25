@@ -74,7 +74,7 @@
 						{#if event.start.split(':')[0] === `${hour}` || event.end.split(':')[0] === `${hour}`}
 							{#if event.start.split(':')[0] === `${hour}`}
 								<button
-									on:click={eventModal(event.title, event.start, event.end)}
+									on:click={() => eventModal(event.title, event.start, event.end)}
 									class="w-full bg-blue-200"
 								>
 									<div class="font-bold">{event.title}</div>
@@ -83,7 +83,7 @@
 							{/if}
 							{#if event.end.split(':')[0] === `${hour}`}
 								<button
-									on:click={eventModal(event.title, event.start, event.end)}
+									on:click={() => eventModal(event.title, event.start, event.end)}
 									class="size-full min-h-8 bg-blue-200"
 									aria-label="end-time-block"
 								></button>
