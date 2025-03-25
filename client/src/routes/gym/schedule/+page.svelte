@@ -15,6 +15,12 @@
 		sun: []
 	};
 
+	let eventInfoModal;
+	let eventTitle = null;
+	let eventStart = null;
+	let eventEnd = null;
+	let eventColour = null;
+
 	function formatTime(time) {
 		const [hours, minutes] = time.split(':');
 		return `${parseInt(hours)}:${minutes}`;
@@ -27,10 +33,27 @@
 		return `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`;
 	}
 
-	function eventModal() {
+	function eventModal(title, start, end, colour) {
 		console.log('eventModal');
+
+		eventTitle = title;
+		eventStart = start;
+		eventEnd = end;
+		eventColour = colour;
+
+		eventInfoModel.showModal();
 	}
 </script>
+
+<dialog class="modal" id="eventInfoModel">
+	<div class="modal-box">
+		<form method="dialog">
+			<button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2">✕</button>
+		</form>
+		<h3 class="text-lg font-bold">{eventTitle}</h3>
+		<p class="py-4">{eventStart} - {eventEnd}</p>
+	</div>
+</dialog>
 
 <div class="grid grid-cols-8 p-4 text-sm">
 	<div class="col-span-1 border-b-2 border-gray-300 font-bold">Time</div>
@@ -50,14 +73,17 @@
 					{#each schedule[day] as event}
 						{#if event.start.split(':')[0] === `${hour}` || event.end.split(':')[0] === `${hour}`}
 							{#if event.start.split(':')[0] === `${hour}`}
-								<button on:click={eventModal} class="w-full bg-blue-200">
+								<button
+									on:click={eventModal(event.title, event.start, event.end)}
+									class="w-full bg-blue-200"
+								>
 									<div class="font-bold">{event.title}</div>
 									<div class="font-bold">{formatTime(event.start)} - {formatTime(event.end)}</div>
 								</button>
 							{/if}
 							{#if event.end.split(':')[0] === `${hour}`}
 								<button
-									on:click={eventModal}
+									on:click={eventModal(event.title, event.start, event.end)}
 									class="size-full min-h-8 bg-blue-200"
 									aria-label="end-time-block"
 								></button>
