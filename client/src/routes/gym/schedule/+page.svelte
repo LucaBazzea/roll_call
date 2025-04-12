@@ -1,28 +1,24 @@
 <script>
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import * as Card from '$lib/components/ui/card';
 	import * as Drawer from '$lib/components/ui/drawer';
 
 	let schedule = {
 		mon: [
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456' },
-			{ title: 'No-gi', start: '18:00', end: '19:30', colour: '#f456' }
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '18:00', end: '19:30', colour: '#f456', coach: 'Milton Friedman' }
 		],
 		tue: [],
 		wed: [],
 		thu: [
-			{ title: 'No-gi', start: '16:00', end: '17:30', colour: '#98fb98' },
-			{ title: 'No-gi', start: '18:00', end: '19:30', colour: '#f456' }
+			{ title: 'No-gi', start: '16:00', end: '17:30', colour: '#98fb98', coach: 'Epictetus' },
+			{ title: 'No-gi', start: '18:00', end: '19:30', colour: '#f456', coach: 'Plato' }
 		],
 		fri: [],
 		sat: [],
 		sun: []
 	};
 
-	let eventTitle;
-	let eventStart;
-	let eventEnd;
-	let eventColour;
+	let dayToday = 'mon';
 
 	function formatTime(time) {
 		const [hours, minutes] = time.split(':');
@@ -37,7 +33,7 @@
 	}
 </script>
 
-<Tabs.Root value="mon" class="w-full">
+<Tabs.Root value={dayToday} class="w-full">
 	<Tabs.List class="grid w-full grid-cols-7">
 		<Tabs.Trigger value="mon">Mon</Tabs.Trigger>
 		<Tabs.Trigger value="tue">Tue</Tabs.Trigger>
