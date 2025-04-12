@@ -89,7 +89,6 @@
 </div>
 
 <Dialog.Root bind:open={eventDialogOpen}>
-	<Dialog.Trigger />
 	<Dialog.Content>
 		<Dialog.Header>
 			<Dialog.Title>{eventTitle}</Dialog.Title>
