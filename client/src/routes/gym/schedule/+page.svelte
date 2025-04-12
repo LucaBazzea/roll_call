@@ -49,10 +49,15 @@
 				<Drawer.Root>
 					<Drawer.Trigger class="w-full p-2">
 						<div class="flex flex-row rounded-md border px-4 py-3">
-							<div class="my-auto size-10 rounded-lg bg-gray-50">i</div>
+							<div class="my-auto rounded-lg bg-blue-400 p-2">
+								<p class="text-md font-bold text-black">{formatTime(event.start)}</p>
+								<p class="text-xs font-bold text-black">
+									{getDuration(formatTime(event.start), formatTime(event.end))}
+								</p>
+							</div>
 							<div class="mx-4 my-auto flex flex-col">
 								<h1 class="text-lg">{event.title}</h1>
-								<p class="text-sm">{formatTime(event.start)} - {formatTime(event.end)}</p>
+								<h3 class="text-sm">{event.coach}</h3>
 							</div>
 						</div>
 					</Drawer.Trigger>
