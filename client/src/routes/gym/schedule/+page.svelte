@@ -1,7 +1,7 @@
 <script>
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Drawer from '$lib/components/ui/drawer';
 
 	let schedule = {
 		mon: [
@@ -19,7 +19,6 @@
 		sun: []
 	};
 
-	let eventDialogOpen = $state(false);
 	let eventTitle;
 	let eventStart;
 	let eventEnd;
@@ -36,15 +35,6 @@
 		const durationMinutes = endHours * 60 + endMinutes - (startHours * 60 + startMinutes);
 		return `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`;
 	}
-
-	function eventDialog(title, start, end, colour) {
-		eventTitle = title;
-		eventStart = start;
-		eventEnd = end;
-		eventColour = colour;
-
-		eventDialogOpen = true;
-	}
 </script>
 
 <Tabs.Root value="mon" class="w-full">
@@ -60,25 +50,28 @@
 	{#each Object.keys(schedule) as day}
 		<Tabs.Content value={day}>
 			{#each schedule[day] as event}
-				<button
-					onclick={() => eventDialog(event.title, event.start, event.end, event.colour)}
-					class="w-full bg-blue-200"
-				>
-					<div>{event.title}</div>
-					<div>{formatTime(event.start)} - {formatTime(event.end)}</div>
-				</button>
+				<Drawer.Root>
+					<Drawer.Trigger>
+						<button class="w-full bg-blue-200">
+							<div>{event.title}</div>
+							<div>{formatTime(event.start)} - {formatTime(event.end)}</div>
+						</button>
+					</Drawer.Trigger>
+					<Drawer.Content>
+						<Drawer.Header>
+							<Drawer.Title>
+								{event.title}
+							</Drawer.Title>
+							<Drawer.Description>
+								{formatTime(event.start)} - {formatTime(event.end)}
+							</Drawer.Description>
+						</Drawer.Header>
+						<Drawer.Footer>
+							<Drawer.Close>Close</Drawer.Close>
+						</Drawer.Footer>
+					</Drawer.Content>
+				</Drawer.Root>
 			{/each}
 		</Tabs.Content>
 	{/each}
 </Tabs.Root>
-
-<Dialog.Root bind:open={eventDialogOpen}>
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>{eventTitle}</Dialog.Title>
-			<Dialog.Description>
-				{eventStart} - {eventEnd}
-			</Dialog.Description>
-		</Dialog.Header>
-	</Dialog.Content>
-</Dialog.Root>
