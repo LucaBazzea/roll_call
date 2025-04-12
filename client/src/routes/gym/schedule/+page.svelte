@@ -1,5 +1,6 @@
 <script>
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import * as Card from '$lib/components/ui/card';
 	import * as Drawer from '$lib/components/ui/drawer';
 
 	let schedule = {
@@ -50,11 +51,14 @@
 		<Tabs.Content value={day}>
 			{#each schedule[day] as event}
 				<Drawer.Root>
-					<Drawer.Trigger>
-						<button class="w-full bg-blue-200">
-							<div>{event.title}</div>
-							<div>{formatTime(event.start)} - {formatTime(event.end)}</div>
-						</button>
+					<Drawer.Trigger class="w-full p-2">
+						<div class="flex flex-row rounded-md border px-4 py-3">
+							<div class="my-auto size-10 rounded-lg bg-gray-50">i</div>
+							<div class="mx-4 my-auto flex flex-col">
+								<h1 class="text-lg">{event.title}</h1>
+								<p class="text-sm">{formatTime(event.start)} - {formatTime(event.end)}</p>
+							</div>
+						</div>
 					</Drawer.Trigger>
 					<Drawer.Content>
 						<Drawer.Header>
