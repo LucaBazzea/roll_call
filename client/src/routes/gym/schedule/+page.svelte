@@ -1,5 +1,4 @@
 <script>
-	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Drawer from '$lib/components/ui/drawer';
 
