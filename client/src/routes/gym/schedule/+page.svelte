@@ -1,11 +1,18 @@
 <script>
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Drawer from '$lib/components/ui/drawer';
+	import * as Avatar from '$lib/components/ui/avatar';
 
 	let schedule = {
 		mon: [
 			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '18:00', end: '19:30', colour: '#f456', coach: 'Milton Friedman' }
+			{
+				title: 'No-gi Pressure Passing',
+				start: '18:00',
+				end: '19:30',
+				colour: '#f456',
+				coach: 'Milton Friedman'
+			}
 		],
 		tue: [],
 		wed: [],
@@ -69,6 +76,18 @@
 							<Drawer.Description>
 								{formatTime(event.start)} - {formatTime(event.end)}
 							</Drawer.Description>
+							<div class="flex flex-row rounded-md border px-4 py-3">
+								<Avatar.Root>
+									<Avatar.Image
+										src="https://avatars.githubusercontent.com/u/33540116"
+										alt="Coach's Avatar"
+									/>
+									<Avatar.Fallback>Coach</Avatar.Fallback>
+								</Avatar.Root>
+								<div class="mx-4 my-auto flex flex-col">
+									<h3 class="text-md">{event.coach}</h3>
+								</div>
+							</div>
 						</Drawer.Header>
 						<Drawer.Footer>
 							<Drawer.Close>Close</Drawer.Close>
