@@ -2,6 +2,8 @@
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Drawer from '$lib/components/ui/drawer';
 	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
 
 	let schedule = {
 		mon: [
@@ -62,16 +64,20 @@
 									{getDuration(formatTime(event.start), formatTime(event.end))}
 								</p>
 							</div>
-							<div class="mx-4 my-auto flex flex-col">
+							<div class="mx-4 my-auto flex flex-col text-left">
 								<h1 class="text-lg">{event.title}</h1>
-								<h3 class="text-sm">{event.coach}</h3>
+								<Card.Description>
+									{event.coach}
+								</Card.Description>
 							</div>
 						</div>
 					</Drawer.Trigger>
 					<Drawer.Content>
 						<Drawer.Header>
 							<Drawer.Title>
-								{event.title}
+								<h1 class="text-lg">
+									{event.title}
+								</h1>
 							</Drawer.Title>
 							<Drawer.Description>
 								{formatTime(event.start)} - {formatTime(event.end)}
@@ -90,7 +96,10 @@
 							</div>
 						</Drawer.Header>
 						<Drawer.Footer>
-							<Drawer.Close>Close</Drawer.Close>
+							<Button>Book</Button>
+							<Drawer.Close>
+								<Button class="w-full" variant="outline">Close</Button>
+							</Drawer.Close>
 						</Drawer.Footer>
 					</Drawer.Content>
 				</Drawer.Root>
