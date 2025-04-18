@@ -1,9 +1,25 @@
 <script>
+	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Drawer from '$lib/components/ui/drawer';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import * as Select from "$lib/components/ui/select";
+	import { Textarea } from "$lib/components/ui/textarea/index.js";
+
+	const weekdays = [
+		{ label: "Monday", value: "mon" },
+		{ label: "Tuesday", value: "tue" },
+		{ label: "Wednesday", value: "wed" },
+		{ label: "Thursday", value: "thu" },
+		{ label: "Friday", value: "fri" },
+		{ label: "Saturday", value: "sat" },
+		{ label: "Sunday", value: "sun" }
+	];
 
 	let schedule = {
 		mon: [
@@ -26,6 +42,9 @@
 		sat: [],
 		sun: []
 	};
+
+	// TODO: Put this in store
+	let isAdmin = true;
 
 	let dayToday = 'mon';
 
@@ -52,6 +71,77 @@
 		<Tabs.Trigger value="sat">Sat</Tabs.Trigger>
 		<Tabs.Trigger value="sun">Sun</Tabs.Trigger>
 	</Tabs.List>
+
+	{#if isAdmin}
+		<nav class="flex flex-row justify-between border bg-yellow-400 p-2">
+			<Badge>Admin</Badge>
+			<Dialog.Root>
+				<Dialog.Trigger>
+					<Button>Add Class</Button>
+				</Dialog.Trigger>
+				<Dialog.Content class="sm:max-w-[425px] border-yellow-400 rouned-md">
+					<Dialog.Header>
+						<Dialog.Title>Add Class</Dialog.Title>
+						<Dialog.Description>
+							Fill in class info here. Click save when you're done.
+						</Dialog.Description>
+					</Dialog.Header>
+					<div class="grid gap-4 py-4">
+						<div class="grid grid-cols-4 items-center gap-4">
+							<Label for="addClassDay" class="text-right">Day *</Label>
+							<Select.Root portal={null}>
+							  <Select.Trigger class="w-[180px]">
+							    <Select.Value placeholder="Day" />
+							  </Select.Trigger>
+							  <Select.Content>
+							    <Select.Group>
+							      {#each weekdays as day}
+								<Select.Item value={day.value} label={day.label}
+								  >{day.label}</Select.Item
+								>
+							      {/each}
+							    </Select.Group>
+							  </Select.Content>
+							  <Select.Input name="favoriteFruit" />
+							</Select.Root>
+						</div>
+						<div class="grid grid-cols-4 items-center gap-4">
+							<Label for="title" class="text-right">Title *</Label>
+							<Input id="title" value="" class="col-span-3" />
+						</div>
+						<div class="grid grid-cols-4 items-center gap-4">
+							<Label for="description" class="text-right">Description</Label>
+							<Textarea id="description" value="" class="col-span-3" placeholder="Description (optional)" />
+						</div>
+						<div class="grid grid-cols-4 items-center gap-4">
+							<Label for="username" class="text-right">Start *</Label>
+							<div class="flex flex-row col-span-3">
+								<Input id="username" value="00" class="col-span-3" />
+								<p>:</p>
+								<Input id="username" value="00" class="col-span-3" />
+							</div>
+						</div>
+						<div class="grid grid-cols-4 items-center gap-4">
+							<Label for="username" class="text-right">End *</Label>
+							<div class="flex flex-row col-span-3">
+								<Input id="username" value="00" class="col-span-3" />
+								<p>:</p>
+								<Input id="username" value="00" class="col-span-3" />
+							</div>
+						</div>
+						<div class="grid grid-cols-4 items-center gap-4">
+							<Label for="username" class="text-right">Coach</Label>
+							<Input id="username" value="" class="col-span-3" />
+						</div>
+					</div>
+					<Dialog.Footer>
+						<Button type="submit">Save changes</Button>
+					</Dialog.Footer>
+				</Dialog.Content>
+			</Dialog.Root>
+		</nav>
+	{/if}
+
 	{#each Object.keys(schedule) as day}
 		<Tabs.Content value={day}>
 			{#each schedule[day] as event}
