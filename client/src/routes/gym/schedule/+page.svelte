@@ -8,17 +8,17 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import * as Select from "$lib/components/ui/select";
-	import { Textarea } from "$lib/components/ui/textarea/index.js";
+	import * as Select from '$lib/components/ui/select';
+	import { Textarea } from '$lib/components/ui/textarea/index.js';
 
 	const weekdays = [
-		{ label: "Monday", value: "mon" },
-		{ label: "Tuesday", value: "tue" },
-		{ label: "Wednesday", value: "wed" },
-		{ label: "Thursday", value: "thu" },
-		{ label: "Friday", value: "fri" },
-		{ label: "Saturday", value: "sat" },
-		{ label: "Sunday", value: "sun" }
+		{ label: 'Monday', value: 'mon' },
+		{ label: 'Tuesday', value: 'tue' },
+		{ label: 'Wednesday', value: 'wed' },
+		{ label: 'Thursday', value: 'thu' },
+		{ label: 'Friday', value: 'fri' },
+		{ label: 'Saturday', value: 'sat' },
+		{ label: 'Sunday', value: 'sun' }
 	];
 
 	let schedule = {
@@ -47,6 +47,32 @@
 	let isAdmin = true;
 
 	let dayToday = 'mon';
+
+	let addClassDay = null;
+	let addClassTitle = null;
+	let addClassDescription = null;
+	let addClassStartHour = null;
+	let addClassStartMinute = null;
+	let addClassEndHour = null;
+	let addClassEndMinute = null;
+	let addClassCoachID = null;
+	let addClassCoachString = null;
+
+	function postAddClassData() {
+		let addClassData = {
+			day: document.getElementById('addClassDay'),
+			title: document.getElementById('addClassTitle'),
+			description: document.getElementById('addClassDescription'),
+			start_hour: document.getElementById('addClassStartHour'),
+			start_minute: document.getElementById('addClassStartMinute'),
+			end_hour: document.getElementById('addClassEndHour'),
+			end_minute: document.getElementById('addClassEndMinute'),
+			coach_id: document.getElementById('addClassCoachID'),
+			coach_string: document.getElementById('addClassCoachString')
+		};
+
+		console.log(addClassData);
+	}
 
 	function formatTime(time) {
 		const [hours, minutes] = time.split(':');
@@ -79,7 +105,7 @@
 				<Dialog.Trigger>
 					<Button>Add Class</Button>
 				</Dialog.Trigger>
-				<Dialog.Content class="sm:max-w-[425px] border-yellow-400 rouned-md">
+				<Dialog.Content class="rouned-md border-yellow-400 sm:max-w-[425px]">
 					<Dialog.Header>
 						<Dialog.Title>Add Class</Dialog.Title>
 						<Dialog.Description>
@@ -90,52 +116,55 @@
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassDay" class="text-right">Day *</Label>
 							<Select.Root portal={null}>
-							  <Select.Trigger class="w-[180px]">
-							    <Select.Value placeholder="Day" />
-							  </Select.Trigger>
-							  <Select.Content>
-							    <Select.Group>
-							      {#each weekdays as day}
-								<Select.Item value={day.value} label={day.label}
-								  >{day.label}</Select.Item
-								>
-							      {/each}
-							    </Select.Group>
-							  </Select.Content>
-							  <Select.Input name="favoriteFruit" />
+								<Select.Trigger class="w-[180px]">
+									<Select.Value value="Monday" />
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Group>
+										{#each weekdays as day}
+											<Select.Item value={day.value} label={day.label}>{day.label}</Select.Item>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+								<Select.Input name="favoriteFruit" />
 							</Select.Root>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="title" class="text-right">Title *</Label>
-							<Input id="title" value="" class="col-span-3" />
+							<Label for="addClassTitle" class="text-right">Title *</Label>
+							<Input id="addClassTitle" value="" class="col-span-3" />
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="description" class="text-right">Description</Label>
-							<Textarea id="description" value="" class="col-span-3" placeholder="Description (optional)" />
+							<Label for="addClassDescription" class="text-right">Description</Label>
+							<Textarea
+								id="addClassDescription"
+								value=""
+								class="col-span-3"
+								placeholder="Description (optional)"
+							/>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="username" class="text-right">Start *</Label>
-							<div class="flex flex-row col-span-3">
-								<Input id="username" value="00" class="col-span-3" />
+							<Label for="addClass" class="text-right">Start *</Label>
+							<div class="col-span-3 flex flex-row space-x-1">
+								<Input id="addClassStartHour" placeholder="00" class="" />
 								<p>:</p>
-								<Input id="username" value="00" class="col-span-3" />
+								<Input id="addClassStartMinute" placeholder="00" class="" />
 							</div>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="username" class="text-right">End *</Label>
-							<div class="flex flex-row col-span-3">
-								<Input id="username" value="00" class="col-span-3" />
+							<div class="col-span-3 flex flex-row space-x-1">
+								<Input id="addClassEndHour" placeholder="00" class="" />
 								<p>:</p>
-								<Input id="username" value="00" class="col-span-3" />
+								<Input id="addClassEndMinute" placeholder="00" class="" />
 							</div>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="username" class="text-right">Coach</Label>
-							<Input id="username" value="" class="col-span-3" />
+							<Label for="addClassCoach" class="text-right">Coach</Label>
+							<Input id="addClassCoach" value="" class="col-span-3" />
 						</div>
 					</div>
 					<Dialog.Footer>
-						<Button type="submit">Save changes</Button>
+						<Button type="submit" on:click={postAddClassData}>Save changes</Button>
 					</Dialog.Footer>
 				</Dialog.Content>
 			</Dialog.Root>
