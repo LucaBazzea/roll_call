@@ -46,29 +46,33 @@
 	// TODO: Put this in store
 	let isAdmin = true;
 
+	// TODO: Get the day today
 	let dayToday = 'mon';
 
-	let addClassDay = null;
+	let addClassDay = dayToday;
 	let addClassTitle = null;
 	let addClassDescription = null;
 	let addClassStartHour = null;
 	let addClassStartMinute = null;
 	let addClassEndHour = null;
 	let addClassEndMinute = null;
-	let addClassCoachID = null;
-	let addClassCoachString = null;
+	let addClassCoach = null;
 
 	function postAddClassData() {
+		if (!addClassDay || !addClassTitle || !addClassStartHour || !addClassEndHour) {
+			console.error('Null form value');
+			return;
+		}
+
 		let addClassData = {
-			day: document.getElementById('addClassDay'),
-			title: document.getElementById('addClassTitle'),
-			description: document.getElementById('addClassDescription'),
-			start_hour: document.getElementById('addClassStartHour'),
-			start_minute: document.getElementById('addClassStartMinute'),
-			end_hour: document.getElementById('addClassEndHour'),
-			end_minute: document.getElementById('addClassEndMinute'),
-			coach_id: document.getElementById('addClassCoachID'),
-			coach_string: document.getElementById('addClassCoachString')
+			day: addClassDay,
+			title: addClassTitle,
+			description: addClassDescription,
+			start_hour: addClassStartHour,
+			start_minute: addClassStartMinute,
+			end_hour: addClassEndHour,
+			end_minute: addClassEndMinute,
+			coach: addClassCoach
 		};
 
 		console.log(addClassData);
@@ -115,9 +119,9 @@
 					<div class="grid gap-4 py-4">
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassDay" class="text-right">Day *</Label>
-							<Select.Root portal={null}>
+							<Select.Root selected={addClassDay}>
 								<Select.Trigger class="w-[180px]">
-									<Select.Value value="Monday" />
+									<Select.Value placeholder={addClassDay} />
 								</Select.Trigger>
 								<Select.Content>
 									<Select.Group>
@@ -126,18 +130,17 @@
 										{/each}
 									</Select.Group>
 								</Select.Content>
-								<Select.Input name="favoriteFruit" />
 							</Select.Root>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassTitle" class="text-right">Title *</Label>
-							<Input id="addClassTitle" value="" class="col-span-3" />
+							<Input id="addClassTitle" bind:value={addClassTitle} class="col-span-3" />
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassDescription" class="text-right">Description</Label>
 							<Textarea
 								id="addClassDescription"
-								value=""
+								bind:value={addClassDescription}
 								class="col-span-3"
 								placeholder="Description (optional)"
 							/>
@@ -145,22 +148,42 @@
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClass" class="text-right">Start *</Label>
 							<div class="col-span-3 flex flex-row space-x-1">
-								<Input id="addClassStartHour" placeholder="00" class="" />
+								<Input
+									id="addClassStartHour"
+									bind:value={addClassStartHour}
+									placeholder="00"
+									class=""
+								/>
 								<p>:</p>
-								<Input id="addClassStartMinute" placeholder="00" class="" />
+								<Input
+									id="addClassStartMinute"
+									bind:value={addClassStartMinute}
+									placeholder="00"
+									class=""
+								/>
 							</div>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="username" class="text-right">End *</Label>
 							<div class="col-span-3 flex flex-row space-x-1">
-								<Input id="addClassEndHour" placeholder="00" class="" />
+								<Input
+									id="addClassEndHour"
+									bind:value={addClassEndHour}
+									placeholder="00"
+									class=""
+								/>
 								<p>:</p>
-								<Input id="addClassEndMinute" placeholder="00" class="" />
+								<Input
+									id="addClassEndMinute"
+									bind:value={addClassEndMinute}
+									placeholder="00"
+									class=""
+								/>
 							</div>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassCoach" class="text-right">Coach</Label>
-							<Input id="addClassCoach" value="" class="col-span-3" />
+							<Input id="addClassCoach" bind:value={addClassCoach} class="col-span-3" />
 						</div>
 					</div>
 					<Dialog.Footer>
