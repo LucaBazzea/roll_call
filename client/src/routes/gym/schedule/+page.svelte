@@ -10,6 +10,8 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Select from '$lib/components/ui/select';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
+	import CircleAlert from 'lucide-svelte/icons/circle-alert';
+	import * as Alert from '$lib/components/ui/alert/index.js';
 
 	const weekdays = [
 		{ label: 'Monday', value: 'mon' },
@@ -49,6 +51,8 @@
 	// TODO: Get the day today
 	let dayToday = 'mon';
 
+	let addClassErrorFlag = false;
+
 	let addClassDay = dayToday;
 	let addClassTitle = null;
 	let addClassDescription = null;
@@ -61,6 +65,7 @@
 	function postAddClassData() {
 		if (!addClassDay || !addClassTitle || !addClassStartHour || !addClassEndHour) {
 			console.error('Null form value');
+			addClassErrorFlag = true;
 			return;
 		}
 
@@ -76,6 +81,8 @@
 		};
 
 		console.log(addClassData);
+
+		addClassErrorFlag = false;
 	}
 
 	function formatTime(time) {
@@ -116,6 +123,13 @@
 							Fill in class info here. Click save when you're done.
 						</Dialog.Description>
 					</Dialog.Header>
+					{#if addClassErrorFlag}
+						<Alert.Root class="text-left">
+							<CircleAlert class="h-4 w-4" />
+							<Alert.Title>Alert</Alert.Title>
+							<Alert.Description>Please fill in the missing information</Alert.Description>
+						</Alert.Root>
+					{/if}
 					<div class="grid gap-4 py-4">
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassDay" class="text-right">Day *</Label>
