@@ -12,6 +12,8 @@
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import CircleAlert from 'lucide-svelte/icons/circle-alert';
 	import * as Alert from '$lib/components/ui/alert/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import DialogFooter from '$lib/components/ui/dialog/dialog-footer.svelte';
 
 	const weekdays = [
 		{ label: 'Monday', value: 'mon' },
@@ -83,6 +85,10 @@
 		console.log(addClassData);
 
 		addClassErrorFlag = false;
+	}
+
+	function deleteClass() {
+		console.log('Class Deleted');
 	}
 
 	function formatTime(time) {
@@ -256,6 +262,22 @@
 							<Drawer.Close>
 								<Button class="w-full" variant="outline">Close</Button>
 							</Drawer.Close>
+							{#if isAdmin === true}
+								<Dialog.Root>
+									<Dialog.Trigger>
+										<Button variant="secondary" class="mt-6 w-full">Delete Class</Button>
+									</Dialog.Trigger>
+									<Dialog.Content>
+										<Dialog.Header>
+											<Dialog.Title>Delete Class</Dialog.Title>
+											<Dialog.Description>Are you sure?</Dialog.Description>
+										</Dialog.Header>
+										<DialogFooter>
+											<Button variant="destructive" on:click={deleteClass}>Delete</Button>
+										</DialogFooter>
+									</Dialog.Content>
+								</Dialog.Root>
+							{/if}
 						</Drawer.Footer>
 					</Drawer.Content>
 				</Drawer.Root>
