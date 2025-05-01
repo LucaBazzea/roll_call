@@ -113,8 +113,8 @@
 	}
 </script>
 
-<Tabs.Root value={dayToday} class="relative w-full pb-14 pt-10">
-	<Tabs.List class="fixed top-0 grid w-full grid-cols-7 rounded-t-none">
+<Tabs.Root value={dayToday} class="relative w-full pb-12 pt-10">
+	<Tabs.List class="fixed top-0 grid w-full grid-cols-7 rounded-none">
 		<Tabs.Trigger value="mon">Mon</Tabs.Trigger>
 		<Tabs.Trigger value="tue">Tue</Tabs.Trigger>
 		<Tabs.Trigger value="wed">Wed</Tabs.Trigger>
@@ -198,8 +198,8 @@
 	{#if isAdmin}
 		<div class="fixed bottom-0 w-full">
 			<Dialog.Root>
-				<Dialog.Trigger class="w-full p-2">
-					<Button variant="secondary" class="w-full text-center">+ Add Class</Button>
+				<Dialog.Trigger class="w-full">
+					<Button variant="secondary" class="w-full rounded-none text-center">Add Class</Button>
 				</Dialog.Trigger>
 				<Dialog.Content class="sm:max-w-[425px]">
 					<Dialog.Header>
