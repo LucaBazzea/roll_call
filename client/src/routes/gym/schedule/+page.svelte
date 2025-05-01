@@ -12,7 +12,6 @@
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import CircleAlert from 'lucide-svelte/icons/circle-alert';
 	import * as Alert from '$lib/components/ui/alert/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import DialogFooter from '$lib/components/ui/dialog/dialog-footer.svelte';
 
 	const weekdays = [
@@ -27,6 +26,16 @@
 
 	let schedule = {
 		mon: [
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
+			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
 			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
 			{
 				title: 'No-gi Pressure Passing',
@@ -104,8 +113,10 @@
 	}
 </script>
 
-<Tabs.Root value={dayToday} class="w-full">
-	<Tabs.List class="grid w-full grid-cols-7">
+<Tabs.Root value={dayToday} class="relative w-full py-8">
+	<!-- TODO: Remove rounding on top corners -->
+	<!-- TODO: Display sticky at the top -->
+	<Tabs.List class="fixed top-0 grid w-full grid-cols-7">
 		<Tabs.Trigger value="mon">Mon</Tabs.Trigger>
 		<Tabs.Trigger value="tue">Tue</Tabs.Trigger>
 		<Tabs.Trigger value="wed">Wed</Tabs.Trigger>
@@ -115,14 +126,85 @@
 		<Tabs.Trigger value="sun">Sun</Tabs.Trigger>
 	</Tabs.List>
 
+	{#each Object.keys(schedule) as day}
+		<Tabs.Content value={day}>
+			{#each schedule[day] as event}
+				<Drawer.Root>
+					<Drawer.Trigger class="w-full p-2">
+						<div class="flex flex-row rounded-md border px-4 py-3">
+							<div class="my-auto rounded-lg bg-blue-400 p-2">
+								<p class="text-md font-bold text-black">{formatTime(event.start)}</p>
+								<p class="text-xs font-bold text-black">
+									{getDuration(formatTime(event.start), formatTime(event.end))}
+								</p>
+							</div>
+							<div class="mx-4 my-auto flex flex-col text-left">
+								<h1 class="text-lg">{event.title}</h1>
+								<Card.Description>
+									{event.coach}
+								</Card.Description>
+							</div>
+						</div>
+					</Drawer.Trigger>
+					<Drawer.Content>
+						<Drawer.Header>
+							<Drawer.Title>
+								<h1 class="text-lg">
+									{event.title}
+								</h1>
+							</Drawer.Title>
+							<Drawer.Description>
+								{formatTime(event.start)} - {formatTime(event.end)}
+							</Drawer.Description>
+							<div class="flex flex-row rounded-md border px-4 py-3">
+								<Avatar.Root>
+									<Avatar.Image
+										src="https://avatars.githubusercontent.com/u/33540116"
+										alt="Coach's Avatar"
+									/>
+									<Avatar.Fallback>Coach</Avatar.Fallback>
+								</Avatar.Root>
+								<div class="mx-4 my-auto flex flex-col">
+									<h3 class="text-md">{event.coach}</h3>
+								</div>
+							</div>
+						</Drawer.Header>
+						<Drawer.Footer>
+							<Button>Book</Button>
+							<Drawer.Close>
+								<Button class="w-full" variant="outline">Close</Button>
+							</Drawer.Close>
+							{#if isAdmin === true}
+								<Dialog.Root>
+									<Dialog.Trigger>
+										<Button variant="secondary" class="mt-6 w-full">Delete Class</Button>
+									</Dialog.Trigger>
+									<Dialog.Content>
+										<Dialog.Header>
+											<Dialog.Title>Delete Class</Dialog.Title>
+											<Dialog.Description>Are you sure?</Dialog.Description>
+										</Dialog.Header>
+										<DialogFooter>
+											<Button variant="destructive" on:click={deleteClass}>Delete</Button>
+										</DialogFooter>
+									</Dialog.Content>
+								</Dialog.Root>
+							{/if}
+						</Drawer.Footer>
+					</Drawer.Content>
+				</Drawer.Root>
+			{/each}
+		</Tabs.Content>
+	{/each}
+
+	<!-- TODO: Display sticky at the bottom -->
 	{#if isAdmin}
-		<nav class="flex flex-row justify-between border bg-yellow-400 p-2">
-			<Badge>Admin</Badge>
+		<div class="fixed bottom-0 w-full">
 			<Dialog.Root>
-				<Dialog.Trigger>
-					<Button>Add Class</Button>
+				<Dialog.Trigger class="w-full border border-green-500">
+					<div class="w-full text-center">+ Add Class</div>
 				</Dialog.Trigger>
-				<Dialog.Content class="rouned-md border-yellow-400 sm:max-w-[425px]">
+				<Dialog.Content class="sm:max-w-[425px]">
 					<Dialog.Header>
 						<Dialog.Title>Add Class</Dialog.Title>
 						<Dialog.Description>
@@ -211,77 +293,6 @@
 					</Dialog.Footer>
 				</Dialog.Content>
 			</Dialog.Root>
-		</nav>
+		</div>
 	{/if}
-
-	{#each Object.keys(schedule) as day}
-		<Tabs.Content value={day}>
-			{#each schedule[day] as event}
-				<Drawer.Root>
-					<Drawer.Trigger class="w-full p-2">
-						<div class="flex flex-row rounded-md border px-4 py-3">
-							<div class="my-auto rounded-lg bg-blue-400 p-2">
-								<p class="text-md font-bold text-black">{formatTime(event.start)}</p>
-								<p class="text-xs font-bold text-black">
-									{getDuration(formatTime(event.start), formatTime(event.end))}
-								</p>
-							</div>
-							<div class="mx-4 my-auto flex flex-col text-left">
-								<h1 class="text-lg">{event.title}</h1>
-								<Card.Description>
-									{event.coach}
-								</Card.Description>
-							</div>
-						</div>
-					</Drawer.Trigger>
-					<Drawer.Content>
-						<Drawer.Header>
-							<Drawer.Title>
-								<h1 class="text-lg">
-									{event.title}
-								</h1>
-							</Drawer.Title>
-							<Drawer.Description>
-								{formatTime(event.start)} - {formatTime(event.end)}
-							</Drawer.Description>
-							<div class="flex flex-row rounded-md border px-4 py-3">
-								<Avatar.Root>
-									<Avatar.Image
-										src="https://avatars.githubusercontent.com/u/33540116"
-										alt="Coach's Avatar"
-									/>
-									<Avatar.Fallback>Coach</Avatar.Fallback>
-								</Avatar.Root>
-								<div class="mx-4 my-auto flex flex-col">
-									<h3 class="text-md">{event.coach}</h3>
-								</div>
-							</div>
-						</Drawer.Header>
-						<Drawer.Footer>
-							<Button>Book</Button>
-							<Drawer.Close>
-								<Button class="w-full" variant="outline">Close</Button>
-							</Drawer.Close>
-							{#if isAdmin === true}
-								<Dialog.Root>
-									<Dialog.Trigger>
-										<Button variant="secondary" class="mt-6 w-full">Delete Class</Button>
-									</Dialog.Trigger>
-									<Dialog.Content>
-										<Dialog.Header>
-											<Dialog.Title>Delete Class</Dialog.Title>
-											<Dialog.Description>Are you sure?</Dialog.Description>
-										</Dialog.Header>
-										<DialogFooter>
-											<Button variant="destructive" on:click={deleteClass}>Delete</Button>
-										</DialogFooter>
-									</Dialog.Content>
-								</Dialog.Root>
-							{/if}
-						</Drawer.Footer>
-					</Drawer.Content>
-				</Drawer.Root>
-			{/each}
-		</Tabs.Content>
-	{/each}
 </Tabs.Root>
