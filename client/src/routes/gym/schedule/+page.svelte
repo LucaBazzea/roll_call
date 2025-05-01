@@ -114,9 +114,7 @@
 </script>
 
 <Tabs.Root value={dayToday} class="relative w-full py-8">
-	<!-- TODO: Remove rounding on top corners -->
-	<!-- TODO: Display sticky at the top -->
-	<Tabs.List class="fixed top-0 grid w-full grid-cols-7">
+	<Tabs.List class="fixed top-0 grid w-full grid-cols-7 rounded-t-none">
 		<Tabs.Trigger value="mon">Mon</Tabs.Trigger>
 		<Tabs.Trigger value="tue">Tue</Tabs.Trigger>
 		<Tabs.Trigger value="wed">Wed</Tabs.Trigger>
@@ -197,7 +195,6 @@
 		</Tabs.Content>
 	{/each}
 
-	<!-- TODO: Display sticky at the bottom -->
 	{#if isAdmin}
 		<div class="fixed bottom-0 w-full">
 			<Dialog.Root>
