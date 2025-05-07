@@ -71,6 +71,7 @@
 	let addClassStartMinute = null;
 	let addClassEndHour = null;
 	let addClassEndMinute = null;
+	let addClassCapacity = null;
 	let addClassCoach = null;
 
 	function postAddClassData() {
@@ -88,6 +89,7 @@
 			start_minute: addClassStartMinute,
 			end_hour: addClassEndHour,
 			end_minute: addClassEndMinute,
+			addClassCapacity: addClassCapacity,
 			coach: addClassCoach
 		};
 
@@ -251,6 +253,7 @@
 									id="addClassStartHour"
 									bind:value={addClassStartHour}
 									placeholder="00"
+									type="number"
 									class=""
 								/>
 								<p>:</p>
@@ -258,6 +261,7 @@
 									id="addClassStartMinute"
 									bind:value={addClassStartMinute}
 									placeholder="00"
+									type="number"
 									class=""
 								/>
 							</div>
@@ -269,6 +273,7 @@
 									id="addClassEndHour"
 									bind:value={addClassEndHour}
 									placeholder="00"
+									type="number"
 									class=""
 								/>
 								<p>:</p>
@@ -276,9 +281,20 @@
 									id="addClassEndMinute"
 									bind:value={addClassEndMinute}
 									placeholder="00"
+									type="number"
 									class=""
 								/>
 							</div>
+						</div>
+						<div class="grid grid-cols-4 items-center gap-4">
+							<Label for="addClassCapacity" class="text-right">Capacity</Label>
+							<Input
+								id="addClassCapacity"
+								bind:value={addClassCapacity}
+								placeholder="What is the max no. of students? (optional)"
+								type="number"
+								class="col-span-3"
+							/>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassCoach" class="text-right">Coach</Label>
