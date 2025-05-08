@@ -24,6 +24,16 @@
 		{ label: 'Sunday', value: 'sun' }
 	];
 
+	const weekdayAbbreviations = {
+		"mon": 'Monday',
+		"tue": 'Tuesday',
+		"wed": 'Wednesday',
+		"thu": 'Thursday',
+		"fri": 'Friday',
+		"sat": 'Saturday',
+		"sun": 'Sunday'
+	};
+
 	let schedule = {
 		mon: [
 			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
@@ -64,7 +74,7 @@
 
 	let addClassErrorFlag = false;
 
-	let addClassDay = dayToday;
+	$: addClassDay = dayToday;
 	let addClassTitle = null;
 	let addClassDescription = null;
 	let addClassStartHour = null;
@@ -220,9 +230,14 @@
 					<div class="grid gap-4 py-4">
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassDay" class="text-right">Day *</Label>
-							<Select.Root selected={addClassDay}>
+							<Select.Root
+								selected={addClassDay}
+								onSelectedChange={(s) => {
+									s && (addClassDay = s.value);
+								}}
+							>
 								<Select.Trigger class="w-[180px]">
-									<Select.Value placeholder={addClassDay} />
+									<Select.Value placeholder={weekdayAbbreviations[addClassDay]} />
 								</Select.Trigger>
 								<Select.Content>
 									<Select.Group>
