@@ -25,8 +25,9 @@ class GymTrainingArea(models.Model):
 
 class Class(models.Model):
     gym = models.ForeignKey(Gym, on_delete=models.PROTECT)
+    title = models.CharField(max_length=20)
     coach = models.ForeignKey(User, null=True, on_delete=models.PROTECT)
-    days = [("mon", "Monday"), ("tue", "Tuesday"), ("wed", "Wednesday"), ("thu", "Thursday"), ("fri", "Friday"), ("sat", "Saturday"), ("sun", "Sunday")]
+    days = [("mon", "mon"), ("tue", "tue"), ("wed", "wed"), ("thu", "thu"), ("fri", "fri"), ("sat", "sat"), ("sun", "sun")]
     day = models.CharField(choices=days, max_length=9)
     time_start = models.TimeField()
     time_end = models.TimeField()
