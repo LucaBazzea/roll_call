@@ -5,7 +5,7 @@ FROM python:3.12-alpine
 WORKDIR /app
 
 # Copy the requirements file to the container
-COPY requirements.txt .
+COPY server/requirements.txt .
 
 # Install the dependencies
 RUN apk add --no-cache build-base \
@@ -13,12 +13,12 @@ RUN apk add --no-cache build-base \
     && apk del build-base
 
 # Copy the rest of the application code to the container
-COPY . .
+COPY server/ .
 
-# Set the environment variables from the .env file
-COPY .env /app/.env
+# Set the environment variables from the.env file
+COPY server/.env /app/server/.env
 
-# Make the .env file readable
+# Make the.env file readable
 RUN chmod +r /app/.env
 
 # Expose the port that Django will run on
