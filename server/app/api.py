@@ -4,7 +4,7 @@ from django.core.cache import cache
 from ninja import NinjaAPI
 from ninja.responses import Response
 
-from app import models, schema, services
+from app import models, schema
 
 
 api = NinjaAPI()
@@ -37,10 +37,12 @@ def get_user(request, id: int):
 
     return response
 
+
 @api.get("/schedule/")
 def get_schedule(request, data: schema.UserGymSchema):
     try:
-        gym_member = models.GymMember.objects.get(user_id=data.user_id, gym_id=data.gym_id)
+        gym_member = models.GymMember.objects.get(
+            user_id=data.user_id, gym_id=data.gym_id)
     except models.GymMember.DoesNotExist:
         return Response({"message": "User / gym not found"}, status=404)
 
@@ -56,7 +58,8 @@ def get_schedule(request, data: schema.UserGymSchema):
 
     classes = models.Class.objects.get(gym_id=data.gym_id)
     for row in classes:
-        classe = {"title": row.title, "start": row.time_start, "end": row.time_end, "colour": row.colour_hex, "coach": row.coach }
+        classe = {"title": row.title, "start": row.time_start,
+                  "end": row.time_end, "colour": row.colour_hex, "coach": row.coach}
         schedule[row.day].append(classe)
 
     return Response(schedule, status=200)
