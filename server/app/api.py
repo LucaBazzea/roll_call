@@ -63,3 +63,10 @@ def get_schedule(request, data: schema.UserGymSchema):
         schedule[row.day].append(classe)
 
     return Response(schedule, status=200)
+
+
+@api.post("/class/book/")
+def class_book(request, data):
+    # Check if user is part of the gym that the class belongs to
+    # Add user to ClassBooking
+    pass
