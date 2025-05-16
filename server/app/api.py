@@ -38,7 +38,7 @@ def get_user(request, id: int):
     return response
 
 
-@api.get("/schedule/")
+@api.post("/schedule/")
 def get_schedule(request, data: schema.UserGymSchema):
     try:
         gym_member = models.GymMember.objects.get(
