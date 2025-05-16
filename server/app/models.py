@@ -1,3 +1,4 @@
+from logging import getHandlerByName
 from django.db import models
 
 
@@ -35,6 +36,12 @@ class Class(models.Model):
     notes = models.TextField()
     training_area = models.ForeignKey(GymTrainingArea, null=True, on_delete=models.PROTECT)
     cancelled = models.BooleanField(default=False)
+
+
+class ClassBooking(models.Model):
+    classe = models.ForeignKey(Class, on_delete=models.CASCADE)
+    gym_member = models.ForeignKey(GymMember, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
 
 
 class BeltBJJ(models.Model):
