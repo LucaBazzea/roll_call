@@ -32,7 +32,7 @@ class Class(models.Model):
     day = models.CharField(choices=days, max_length=9)
     time_start = models.TimeField()
     time_end = models.TimeField()
-    capacity = models.PositiveSmallIntegerField(default=0)
+    capacity = models.PositiveSmallIntegerField(null=True, default=None)
     colour_hex = models.CharField(max_length=7)
     notes = models.TextField()
     training_area = models.ForeignKey(GymTrainingArea, null=True, on_delete=models.PROTECT)
