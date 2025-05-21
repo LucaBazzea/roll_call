@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import Q
 from django.core.cache import cache
 
@@ -41,8 +43,7 @@ def get_user(request, id: int):
 @api.post("/schedule/")
 def get_schedule(request, data: schema.UserGymSchema):
     try:
-        gym_member = models.GymMember.objects.get(
-            user_id=data.user_id, gym_id=data.gym_id)
+        models.GymMember.objects.get(user_id=data.user_id, gym_id=data.gym_id).exists()
     except models.GymMember.DoesNotExist:
         return Response({"message": "User / gym not found"}, status=404)
 
@@ -66,7 +67,27 @@ def get_schedule(request, data: schema.UserGymSchema):
 
 
 @api.post("/class/book/")
-def class_book(request, data):
+def class_book(request, data: schema.ClassBookingSchema):
     # Check if user is part of the gym that the class belongs to
-    # Add user to ClassBooking
-    pass
+    try:
+        gym_member_id = models.GymMember.objects.get(user_id=data.user_id, gym_id=data.gym_id).id
+    except models.GymMember.DoesNotExist:
+        return Response({"message": "User / gym not found"}, status=404)
+
+    try:
+        classe = models.Class.objects.get(id=data.class_id).values("id", "capacity")
+    except models.Class.DoesNotExist:
+        return Response({"message": "Class not found"}, status=402)
+
+    class_bookings_count = models.ClassBooking.objects.filter(classe__id=data.class_id).count()
+    if classe["capacity"] != None:
+        if classe["capacity"] <= class_bookings_count:
+            return Response({"message": "Class full"}, status=403)
+
+    new_booking = models.ClassBooking(
+        classe_id = data.class_id,
+        gym_member_id = gym_member_id
+    )
+    new_booking.save()
+
+    return Response({"message": "Class booking created successfully"}, status=200)

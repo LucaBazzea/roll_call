@@ -6,7 +6,7 @@ class UserGymSchema(Schema):
     gym_id: int
 
 
-ClassBookingSchema(Schema):
+class ClassBookingSchema(Schema):
     user_id: int
     gym_id: int
     class_id: int
