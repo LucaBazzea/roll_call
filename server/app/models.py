@@ -42,6 +42,7 @@ class Class(models.Model):
 class ClassBooking(models.Model):
     classe = models.ForeignKey(Class, on_delete=models.PROTECT)
     gym_member = models.ForeignKey(GymMember, on_delete=models.PROTECT)
+    class_date = models.DateField(null=True) # TODO: Remove null
     date_created = models.DateTimeField(auto_now_add=True)
 
 
