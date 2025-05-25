@@ -6,8 +6,7 @@ from django.core.cache import cache
 from ninja import NinjaAPI
 from ninja.responses import Response
 
-from app import models, schema
-
+from app import models, schema, services
 
 api = NinjaAPI()
 
@@ -75,18 +74,26 @@ def class_book(request, data: schema.ClassBookingSchema):
         return Response({"message": "User / gym not found"}, status=404)
 
     try:
-        classe = models.Class.objects.get(id=data.class_id).values("id", "capacity")
+        classe = models.Class.objects.get(id=data.class_id).values("id", "day", "capacity")
     except models.Class.DoesNotExist:
         return Response({"message": "Class not found"}, status=402)
 
     class_bookings_count = models.ClassBooking.objects.filter(classe__id=data.class_id).count()
-    if classe["capacity"] != None:
+
+    # Check if class is full
+    if classe["capacity"] is not None:
         if classe["capacity"] <= class_bookings_count:
             return Response({"message": "Class full"}, status=403)
 
+    # Classes don't have dates, but class bookings do
+    date_today = datetime.now().date()
+    week_current = services.get_week(date_today)
+    class_date = week_current[classe["day"]]
+
     new_booking = models.ClassBooking(
-        classe_id = data.class_id,
-        gym_member_id = gym_member_id
+        classe_id=data.class_id,
+        gym_member_id=gym_member_id,
+        class_date=class_date
     )
     new_booking.save()
 
