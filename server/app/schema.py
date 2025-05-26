@@ -10,3 +10,8 @@ class ClassBookingSchema(Schema):
     user_id: int
     gym_id: int
     class_id: int
+
+
+class GymClassSchema(Schema):
+    gym_id: int
+    class_id: int

@@ -98,3 +98,30 @@ def class_book(request, data: schema.ClassBookingSchema):
     new_booking.save()
 
     return Response({"message": "Class booking created successfully"}, status=200)
+
+
+@api.post("/admin/class/get-bookings/")
+def get_class_bookings(request, data: schema.GymClassSchema):
+    user_id = request.session.get("user_id")
+    try:
+        gym_member = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).values("role")
+
+        if gym_member["role"] is None:
+            return Response({"message": "Invalid permissions"}, status=403)
+
+    except models.GymMember.DoesNotExist:
+        return Response({"message": "User / gym not found"}, status=402)
+
+    try:
+        classe = models.Class.objects.get(id=data.class_id).values("id", "day")
+    except models.Class.DoesNotExist:
+        return Response({"message": "Class not found"}, status=405)
+
+    # Classes don't have dates, but class bookings do
+    date_today = datetime.now().date()
+    week_current = services.get_week(date_today)
+    class_date = week_current[classe["day"]]
+
+    bookings = models.ClassBooking.objects.filter(classe_id=classe["id"], class_date=class_date).first()
+    return Response(bookings, status=200)
+

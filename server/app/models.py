@@ -18,6 +18,8 @@ class GymMember(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     gym = models.ForeignKey(Gym, on_delete=models.PROTECT)
     joined = models.DateTimeField(auto_now_add=True)
+    roles = {"owner": "Owner", "admin": "Admin"}
+    role = models.CharField(max_length=5, choices=roles, null=True)
 
 
 class GymTrainingArea(models.Model):
