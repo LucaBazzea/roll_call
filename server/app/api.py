@@ -12,32 +12,49 @@ api = NinjaAPI()
 
 
 # TODO: Return gym info
-@api.get("/user/")
-def get_user(request, id: int):
+# @api.get("/user/")
+
+
+@api.get("/gym/member/")
+def get_user(request, data):
     # user_id = request.session.get("user_id")
     user_id = 1
 
     try:
-        user = models.User.objects.get(id=user_id)
-    except models.User.DoesNotExist:
-        return 404
+        user = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).values("role")
+    except models.GymMember.DoesNotExist:
+        return Response({"message": "User not associated with gym"}, status=404)
 
     try:
-        belt_bjj_query = models.BeltBJJ.objects.get(user=user)
+        gym_member = models.GymMember.objects.get(user_id=data.user_id, gym_id=data.gym_id)
+    except models.GymMember.DoesNotExist:
+        return Response({"message": "Gym member not found"}, status=404)
+
+    response = {}
+    # Data that only gym owners and admins should be able to see
+    if user["role"] is not None:
+        response["email"] = gym_member.user.email
+
+    try:
+        belt_bjj_query = models.BeltBJJ.objects.filter(
+            user_id=gym_member.user.id
+        ).values(
+            "belt_colour",
+            "stripes",
+            "belt_given_by"
+        ).last()
 
         belt_bjj = {
-            "colour": belt_bjj_query.belt_colour,
-            "stripes": belt_bjj_query.stripes
+            "colour": belt_bjj_query["belt_colour"],
+            "stripes": belt_bjj_query["stripes"],
+            "belt_given_by": belt_bjj_query["belt_given_by"]
         }
     except:
         belt_bjj = None
 
-    response = {
-        "id": user.id,
-        "username": user.username,
-        "email": user.email,
-        "belt_bjj": belt_bjj
-    }
+    response["id"] = gym_member.user.id,
+    response["username"] = gym_member.user.username,
+    response["belt_bjj"] = belt_bjj
 
     return response
 
