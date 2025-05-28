@@ -14,8 +14,11 @@ api = NinjaAPI()
 # TODO: Return gym info
 @api.get("/user/")
 def get_user(request, id: int):
+    # user_id = request.session.get("user_id")
+    user_id = 1
+
     try:
-        user = models.User.objects.get(id=id)
+        user = models.User.objects.get(id=user_id)
     except models.User.DoesNotExist:
         return 404
 
@@ -40,9 +43,12 @@ def get_user(request, id: int):
 
 
 @api.post("/schedule/")
-def get_schedule(request, data: schema.UserGymSchema):
+def get_schedule(request, data: schema.GymSchema):
+    # user_id = request.session.get("user_id")
+    user_id = 1
+
     try:
-        models.GymMember.objects.get(user_id=data.user_id, gym_id=data.gym_id).exists()
+        models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).exists()
     except models.GymMember.DoesNotExist:
         return Response({"message": "User / gym not found"}, status=404)
 
@@ -67,9 +73,12 @@ def get_schedule(request, data: schema.UserGymSchema):
 
 @api.post("/class/book/")
 def class_book(request, data: schema.ClassBookingSchema):
+    # user_id = request.session.get("user_id")
+    user_id = 1
+
     # Check if user is part of the gym that the class belongs to
     try:
-        gym_member_id = models.GymMember.objects.get(user_id=data.user_id, gym_id=data.gym_id).id
+        gym_member_id = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).id
     except models.GymMember.DoesNotExist:
         return Response({"message": "User / gym not found"}, status=404)
 
@@ -102,7 +111,9 @@ def class_book(request, data: schema.ClassBookingSchema):
 
 @api.post("/admin/class/get-bookings/")
 def get_class_bookings(request, data: schema.GymClassSchema):
-    user_id = request.session.get("user_id")
+    # user_id = request.session.get("user_id")
+    user_id = 1
+
     try:
         gym_member = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).values("role")
 
