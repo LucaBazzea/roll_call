@@ -11,12 +11,57 @@ from app import models, schema, services
 api = NinjaAPI()
 
 
-# TODO: Return gym info
-# @api.get("/user/")
+@api.get("/user/")
+def user(request, data):
+    # user_id = request.session.get("user_id")
+    user_id = 1
+
+    try:
+        models.User.objects.get(user_id=user_id).exists()
+    except models.User.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)
+
+    try:
+        belt_bjj_query = models.BeltBJJ.objects.filter(
+            user_id=user_id
+        ).values(
+            "belt_colour",
+            "stripes",
+            "belt_given_by"
+        ).last()
+
+        belt_bjj = {
+            "colour": belt_bjj_query["belt_colour"],
+            "stripes": belt_bjj_query["stripes"],
+            "belt_given_by": belt_bjj_query["belt_given_by"]
+        }
+    except:
+        belt_bjj = None
+
+    try:
+        gyms = models.GymMember.objects.filter(
+            user_id=user_id
+        ).values(
+            "gym__id",
+            "gym__name",
+        )
+    except:
+        gyms = None
+
+
+    response = {
+        "id": gym_member.user.id,
+        "username": gym_member.user.username,
+        "email": gym_member.user.email,
+        "belt_bjj": belt_bjj,
+        "gyms": gyms
+    }
+
+    return response
 
 
 @api.get("/gym/member/")
-def get_user(request, data):
+def gym_member(request, data):
     # user_id = request.session.get("user_id")
     user_id = 1
 
