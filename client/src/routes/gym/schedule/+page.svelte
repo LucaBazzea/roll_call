@@ -25,14 +25,36 @@
 	];
 
 	const weekdayAbbreviations = {
-		"mon": 'Monday',
-		"tue": 'Tuesday',
-		"wed": 'Wednesday',
-		"thu": 'Thursday',
-		"fri": 'Friday',
-		"sat": 'Saturday',
-		"sun": 'Sunday'
+		mon: 'Monday',
+		tue: 'Tuesday',
+		wed: 'Wednesday',
+		thu: 'Thursday',
+		fri: 'Friday',
+		sat: 'Saturday',
+		sun: 'Sunday'
 	};
+
+	async function getSchedule(gymID) {
+		try {
+			const response = await fetch('http://127.0.0.1:8000/app/schedule/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ gym_id: gymID })
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const jsonData = await response.json();
+			return jsonData;
+		} catch (error) {
+			console.error('Failed to fetch schedule:', error);
+			return null;
+		}
+	}
 
 	let schedule = {
 		mon: [
