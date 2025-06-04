@@ -126,8 +126,13 @@ def get_schedule(request, data: schema.GymSchema):
 
     classes = models.Class.objects.get(gym_id=data.gym_id)
     for row in classes:
-        classe = {"title": row.title, "start": row.time_start,
-                  "end": row.time_end, "colour": row.colour_hex, "coach": row.coach}
+        classe = {
+            "title": row.title,
+            "start": row.time_start,
+            "end": row.time_end,
+            "colour": row.colour_hex,
+            "coach": row.coach
+        }
         schedule[row.day].append(classe)
 
     return Response(schedule, status=200)
