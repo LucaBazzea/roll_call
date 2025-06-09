@@ -22,10 +22,6 @@ class GymMember(models.Model):
     role = models.CharField(max_length=5, choices=roles, null=True)
 
 
-class GymTrainingArea(models.Model):
-    name = models.CharField(max_length=100)
-
-
 class Class(models.Model):
     gym = models.ForeignKey(Gym, on_delete=models.PROTECT)
     title = models.CharField(max_length=20)
@@ -35,9 +31,8 @@ class Class(models.Model):
     time_start = models.TimeField()
     time_end = models.TimeField()
     capacity = models.PositiveSmallIntegerField(null=True, default=None)
-    colour_hex = models.CharField(max_length=7)
-    notes = models.TextField()
-    training_area = models.ForeignKey(GymTrainingArea, null=True, on_delete=models.PROTECT)
+    colour_hex = models.CharField(max_length=7, null=True)
+    notes = models.TextField(null=True)
     cancelled = models.BooleanField(default=False)
 
 
