@@ -110,7 +110,7 @@ def get_schedule(request, data: schema.GymSchema):
     user_id = 1
 
     try:
-        models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).exists()
+        models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id)
     except models.GymMember.DoesNotExist:
         return Response({"message": "User / gym not found"}, status=404)
 
@@ -124,16 +124,33 @@ def get_schedule(request, data: schema.GymSchema):
         "sun": []
     }
 
-    classes = models.Class.objects.get(gym_id=data.gym_id)
+    classes = models.Class.objects.filter(
+        gym_id=data.gym_id
+    ).select_related(
+        "coach"
+    ).values(
+        "id",
+        "title",
+        "day",
+        "time_start",
+        "time_end",
+        "capacity",
+        "colour_hex",
+        "notes",
+        "cancelled",
+        "coach__username"
+    )
+
     for row in classes:
         classe = {
-            "title": row.title,
-            "start": row.time_start,
-            "end": row.time_end,
-            "colour": row.colour_hex,
-            "coach": row.coach
+            "title": row["title"],
+            "start": row["time_start"],
+            "end": row["time_end"],
+            "colour": row["colour_hex"],
+            "notes": row["notes"],
+            "coach": row["coach__username"]
         }
-        schedule[row.day].append(classe)
+        schedule[row["day"]].append(classe)
 
     return Response(schedule, status=200)
 
