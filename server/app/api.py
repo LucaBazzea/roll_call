@@ -109,6 +109,10 @@ def get_schedule(request, data: schema.GymSchema):
     # user_id = request.session.get("user_id")
     user_id = 1
 
+    print("::::::::")
+    print(request)
+    print("::::::::")
+
     try:
         models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id)
     except models.GymMember.DoesNotExist:
