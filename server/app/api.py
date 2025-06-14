@@ -104,14 +104,43 @@ def gym_member(request, data):
     return response
 
 
+@api.post("/admin/class/create/")
+def get_schedule_create(request, data: schema.ClassSchema):
+    # user_id = request.session.get("user_id")
+    user_id = 1
+
+    try:
+        gym_member = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).values("role")
+
+        if gym_member["role"] is None:
+            return Response({"message": "Invalid permissions"}, status=403)
+
+    except models.GymMember.DoesNotExist:
+        return Response({"message": "User / gym not found"}, status=402)
+
+    try:
+        class_new = models.Class(
+            data.title,
+            data.day,
+            data.time_start,
+            data.time_end,
+            data.capacity,
+            data.colour_hex,
+            data.notes,
+            data.cancelled,
+            data.coach_user_id
+        )
+        class_new.save()
+    except Exception as error:
+        return Response({"Error": error}, status=500)
+
+    return Response({"message": "Class created successfully"}, status=200)
+
+
 @api.post("/schedule/")
 def get_schedule(request, data: schema.GymSchema):
     # user_id = request.session.get("user_id")
     user_id = 1
-
-    print("::::::::")
-    print(request)
-    print("::::::::")
 
     try:
         models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id)
