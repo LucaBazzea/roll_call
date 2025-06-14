@@ -1,4 +1,5 @@
 <script>
+	import { onMount } from 'svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Drawer from '$lib/components/ui/drawer';
@@ -13,6 +14,9 @@
 	import CircleAlert from 'lucide-svelte/icons/circle-alert';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import DialogFooter from '$lib/components/ui/dialog/dialog-footer.svelte';
+
+	// TODO: Add to store
+	const gymID = '1';
 
 	const weekdays = [
 		{ label: 'Monday', value: 'mon' },
@@ -34,7 +38,7 @@
 		sun: 'Sunday'
 	};
 
-	async function getSchedule(gymID) {
+	async function getSchedule() {
 		try {
 			const response = await fetch('http://127.0.0.1:8000/app/schedule/', {
 				method: 'POST',
@@ -57,32 +61,10 @@
 	}
 
 	let schedule = {
-		mon: [
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{ title: 'No-gi', start: '11:14', end: '12:30', colour: '#f456', coach: 'Andre Ben' },
-			{
-				title: 'No-gi Pressure Passing',
-				start: '18:00',
-				end: '19:30',
-				colour: '#f456',
-				coach: 'Milton Friedman'
-			}
-		],
+		mon: [],
 		tue: [],
 		wed: [],
-		thu: [
-			{ title: 'No-gi', start: '16:00', end: '17:30', colour: '#98fb98', coach: 'Epictetus' },
-			{ title: 'No-gi', start: '18:00', end: '19:30', colour: '#f456', coach: 'Plato' }
-		],
+		thu: [],
 		fri: [],
 		sat: [],
 		sun: []
@@ -145,6 +127,15 @@
 		const durationMinutes = endHours * 60 + endMinutes - (startHours * 60 + startMinutes);
 		return `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`;
 	}
+
+	onMount(async () => {
+		try {
+			schedule = await getSchedule(1); // Replace 1 with the actual gymID value
+			console.log('Schedule:', schedule);
+		} catch (error) {
+			console.error('Failed to fetch schedule:', error);
+		}
+	});
 </script>
 
 <Tabs.Root value={dayToday} class="relative w-full pb-12 pt-10">
