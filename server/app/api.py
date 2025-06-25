@@ -174,11 +174,25 @@ def get_schedule(request, data: schema.GymSchema):
         "coach__username"
     )
 
+    bookings = models.ClassBooking.objects.filter(
+        classe_id__in=classes.values_list("id", flat=True)
+    ).values_list(
+        "classe_id",
+        flat=True
+    )
+
     for row in classes:
+        bookings_count = 0
+        for class_id in bookings:
+            if class_id == row["id"]:
+                bookings_count += 1
+
         classe = {
             "title": row["title"],
             "start": row["time_start"],
             "end": row["time_end"],
+            "capacity": row["capacity"],
+            "bookings_count": bookings_count,
             "colour": row["colour_hex"],
             "notes": row["notes"],
             "coach": row["coach__username"]
