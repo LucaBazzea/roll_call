@@ -14,6 +14,7 @@
 	import CircleAlert from 'lucide-svelte/icons/circle-alert';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import DialogFooter from '$lib/components/ui/dialog/dialog-footer.svelte';
+	import { Progress } from '$lib/components/ui/progress/index.js';
 
 	// TODO: Add to store
 	const gymID = '1';
@@ -154,19 +155,26 @@
 			{#each schedule[day] as event}
 				<Drawer.Root>
 					<Drawer.Trigger class="w-full p-2">
-						<div class="flex flex-row rounded-md border px-4 py-3">
-							<div class="my-auto rounded-lg bg-blue-400 p-2">
-								<p class="text-md font-bold text-black">{formatTime(event.start)}</p>
-								<p class="text-xs font-bold text-black">
-									{getDuration(formatTime(event.start), formatTime(event.end))}
-								</p>
+						<div class="flex flex-col rounded-md border px-4 py-3">
+							<div class="flex flex-row">
+								<div class="my-auto rounded-lg bg-blue-400 p-2">
+									<p class="text-md font-bold text-black">{formatTime(event.start)}</p>
+									<p class="text-xs font-bold text-black">
+										{getDuration(formatTime(event.start), formatTime(event.end))}
+									</p>
+								</div>
+								<div class="mx-4 my-auto flex flex-col text-left">
+									<h1 class="text-lg">{event.title}</h1>
+									<Card.Description>
+										{event.coach}
+									</Card.Description>
+								</div>
 							</div>
-							<div class="mx-4 my-auto flex flex-col text-left">
-								<h1 class="text-lg">{event.title}</h1>
-								<Card.Description>
-									{event.coach}
-								</Card.Description>
-							</div>
+							{#if event.capacity}
+								<div class="mt-4">
+									<Progress value={event.bookings_count} max={event.capacity} class="h-1" />
+								</div>
+							{/if}
 						</div>
 					</Drawer.Trigger>
 					<Drawer.Content>
