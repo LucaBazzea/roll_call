@@ -271,20 +271,19 @@
 					<div class="grid gap-4 py-4">
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassDay" class="text-right">Day *</Label>
-							<Select.Root
-								selected={addClassDay}
-								onSelectedChange={(s) => {
-									s && (addClassDay = s.value);
-								}}
-							>
+							<Select.Root bind:value={addClassDay}>
 								<Select.Trigger class="w-[180px]">
 									<Select.Value placeholder={weekdayAbbreviations[addClassDay]} />
 								</Select.Trigger>
 								<Select.Content>
 									<Select.Group>
-										{#each weekdays as day}
-											<Select.Item value={day.value} label={day.label}>{day.label}</Select.Item>
-										{/each}
+										<Select.Item value="mon" label="Monday" />
+										<Select.Item value="tue" label="Tuesday" />
+										<Select.Item value="wed" label="Wednesday" />
+										<Select.Item value="thu" label="Thursday" />
+										<Select.Item value="fri" label="Friday" />
+										<Select.Item value="sat" label="Saturday" />
+										<Select.Item value="sun" label="Sunday" />
 									</Select.Group>
 								</Select.Content>
 							</Select.Root>
