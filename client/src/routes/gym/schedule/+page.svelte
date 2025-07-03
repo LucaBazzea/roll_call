@@ -16,6 +16,8 @@
 	import DialogFooter from '$lib/components/ui/dialog/dialog-footer.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 
+	const baseURL = 'http://127.0.0.1:8000';
+
 	// TODO: Add to store
 	const gymID = '1';
 
@@ -41,7 +43,7 @@
 
 	async function getSchedule() {
 		try {
-			const response = await fetch('http://127.0.0.1:8000/app/schedule/', {
+			const response = await fetch(`${baseURL}/app/schedule/`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -89,7 +91,7 @@
 	let addClassCapacity = null;
 	let addClassCoach = null;
 
-	function postAddClassData() {
+	async function postAddClassData() {
 		if (!addClassDay || !addClassTitle || !addClassStartHour || !addClassEndHour) {
 			console.error('Null form value');
 			addClassErrorFlag = true;
@@ -107,8 +109,26 @@
 			addClassCapacity: addClassCapacity,
 			coach: addClassCoach
 		};
-
 		console.log(addClassData);
+
+		try {
+			const response = await fetch(`${baseURL}/admin/class/create/`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(addClassData)
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			console.log(data);
+		} catch (error) {
+			addClassErrorFlag = false;
+		}
 
 		addClassErrorFlag = false;
 	}

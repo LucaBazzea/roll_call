@@ -105,7 +105,7 @@ def gym_member(request, data):
 
 
 @api.post("/admin/class/create/")
-def get_schedule_create(request, data: schema.ClassSchema):
+def class_create(request, data: schema.ClassSchema):
     # user_id = request.session.get("user_id")
     user_id = 1
 
