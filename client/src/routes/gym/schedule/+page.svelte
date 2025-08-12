@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+	import { z } from 'zod';
+
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import * as Drawer from '$lib/components/ui/drawer';
@@ -82,7 +84,7 @@
 	let addClassErrorFlag = false;
 
 	$: addClassDay = dayToday;
-	let addClassTitle = null;
+  let addClassTitle = null;
 	let addClassDescription = null;
 	let addClassStartHour = null;
 	let addClassStartMinute = null;
@@ -91,46 +93,70 @@
 	let addClassCapacity = null;
 	let addClassCoach = null;
 
+	let addClassFormErrors = {};
+	const addClassFormSchema = z.object({
+		day: z.enum(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'], { message: 'Day is required' }),
+		title: z
+			.string()
+			.min(1, { message: 'Title is required' })
+			.max(20, { message: 'Title must be less than 20 characters' })
+			.trim(),
+		description: z.string().max(200),
+		startHour: z.number(),
+		startMinute: z.number(),
+		endHour: z.number(),
+		endMinute: z.number(),
+		capacity: z.number(),
+		coach: z.string().max(20).trim()
+	});
+
 	async function postAddClassData() {
-		if (!addClassDay || !addClassTitle || !addClassStartHour || !addClassEndHour) {
-			console.error('Null form value');
-			addClassErrorFlag = true;
-			return;
+	  addClassFormErrors = {};
+	addClassErrorFlag = false;
+
+	const addClassData = {
+		day: addClassDay,
+		title: addClassTitle,
+		description: addClassDescription,
+		startHour: Number(addClassStartHour),
+		startMinute: Number(addClassStartMinute),
+		endHour: Number(addClassEndHour),
+		endMinute: Number(addClassEndMinute),
+		capacity: Number(addClassCapacity),
+		coach: addClassCoach
+	};
+
+	// validate
+	const result = addClassFormSchema.safeParse(addClassData);
+
+	if (!result.success) {
+		addClassErrorFlag = true;
+
+		// collect errors
+		addClassFormErrors = result.error.flatten().fieldErrors;
+		console.error('Validation errors', addClassFormErrors);
+		return;
+	}
+
+	// no errors, send to API
+	try {
+		const response = await fetch(`${baseURL}/admin/class/create/`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(addClassData)
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
 		}
 
-		let addClassData = {
-			day: addClassDay,
-			title: addClassTitle,
-			description: addClassDescription,
-			start_hour: addClassStartHour,
-			start_minute: addClassStartMinute,
-			end_hour: addClassEndHour,
-			end_minute: addClassEndMinute,
-			addClassCapacity: addClassCapacity,
-			coach: addClassCoach
-		};
-		console.log(addClassData);
-
-		try {
-			const response = await fetch(`${baseURL}/admin/class/create/`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(addClassData)
-			});
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-
-			const data = await response.json();
-			console.log(data);
-		} catch (error) {
-			addClassErrorFlag = false;
-		}
-
-		addClassErrorFlag = false;
+		const data = await response.json();
+		console.log('Class created:', data);
+	} catch (error) {
+		console.error('Failed to create class:', error);
+		addClassErrorFlag = true;
+	}
+}
 	}
 
 	function deleteClass() {
@@ -291,6 +317,9 @@
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassTitle" class="text-right">Title *</Label>
 							<Input id="addClassTitle" bind:value={addClassTitle} class="col-span-3" />
+							{#if addClassFormErrors.title}
+								<p class="mt-1 text-sm text-red-500">{formErrors.title[0]}</p>
+							{/if}
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassDescription" class="text-right">Description</Label>
@@ -300,6 +329,9 @@
 								class="col-span-3"
 								placeholder="Description (optional)"
 							/>
+							{#if addClassFormErrors.description}
+								<p class="mt-1 text-sm text-red-500">{formErrors.title[0]}</p>
+							{/if}
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClass" class="text-right">Start *</Label>
@@ -311,6 +343,9 @@
 									type="number"
 									class=""
 								/>
+								{#if addClassFormErrors.startHour}
+									<p class="mt-1 text-sm text-red-500">{formErrors.title[0]}</p>
+								{/if}
 								<p>:</p>
 								<Input
 									id="addClassStartMinute"
@@ -319,6 +354,9 @@
 									type="number"
 									class=""
 								/>
+								{#if addClassFormErrors.startMinute}
+									<p class="mt-1 text-sm text-red-500">{formErrors.title[0]}</p>
+								{/if}
 							</div>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
@@ -331,6 +369,9 @@
 									type="number"
 									class=""
 								/>
+								{#if addClassFormErrors.endHour}
+									<p class="mt-1 text-sm text-red-500">{formErrors.endHour[0]}</p>
+								{/if}
 								<p>:</p>
 								<Input
 									id="addClassEndMinute"
@@ -339,6 +380,9 @@
 									type="number"
 									class=""
 								/>
+								{#if addClassFormErrors.endMinute}
+									<p class="mt-1 text-sm text-red-500">{formErrors.endMinute[0]}</p>
+								{/if}
 							</div>
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
@@ -350,10 +394,16 @@
 								type="number"
 								class="col-span-3"
 							/>
+							{#if addClassFormErrors.capacity}
+								<p class="mt-1 text-sm text-red-500">{formErrors.capacity[0]}</p>
+							{/if}
 						</div>
 						<div class="grid grid-cols-4 items-center gap-4">
 							<Label for="addClassCoach" class="text-right">Coach</Label>
 							<Input id="addClassCoach" bind:value={addClassCoach} class="col-span-3" />
+							{#if addClassFormErrors.coach}
+								<p class="mt-1 text-sm text-red-500">{formErrors.coach[0]}</p>
+							{/if}
 						</div>
 					</div>
 					<Dialog.Footer>
