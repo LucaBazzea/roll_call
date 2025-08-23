@@ -1,5 +1,4 @@
 <script>
-	import '../app.css';
 	import { onMount } from 'svelte';
 	import { z } from 'zod';
 
