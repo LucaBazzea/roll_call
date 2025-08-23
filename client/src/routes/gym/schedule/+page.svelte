@@ -252,8 +252,8 @@
 			<div class="grid gap-4 py-4">
 				<!-- Day -->
 				<div class="form-control">
-					<label class="label">Day *</label>
-					<select bind:value={addClassDay} class="select select-bordered w-full">
+					<label class="label" for="add-class-day">Day *</label>
+					<select id="add-class-day" bind:value={addClassDay} class="select select-bordered w-full">
 						{#each weekdays as day}
 							<option value={day.value}>{day.label}</option>
 						{/each}
@@ -262,8 +262,13 @@
 
 				<!-- Title -->
 				<div class="form-control">
-					<label class="label">Title *</label>
-					<input bind:value={addClassTitle} type="text" class="input input-bordered w-full" />
+					<label class="label" for="add-class-title">Title *</label>
+					<input
+						id="add-class-title"
+						bind:value={addClassTitle}
+						type="text"
+						class="input input-bordered w-full"
+					/>
 					{#if addClassFormErrors.title}
 						<p class="text-sm text-red-500">{addClassFormErrors.title[0]}</p>
 					{/if}
@@ -271,15 +276,18 @@
 
 				<!-- Description -->
 				<div class="form-control">
-					<label class="label">Description</label>
-					<textarea bind:value={addClassDescription} class="textarea textarea-bordered w-full"
+					<label class="label" for="add-class-description">Description</label>
+					<textarea
+						id="add-class-description"
+						bind:value={addClassDescription}
+						class="textarea textarea-bordered w-full"
 					></textarea>
 				</div>
 
 				<!-- Start -->
 				<div class="form-control">
-					<label class="label">Start *</label>
-					<div class="flex gap-2">
+					<label class="label" for="add-class-time-start">Start *</label>
+					<div id="add-class-time-start" class="flex gap-2">
 						<input
 							bind:value={addClassStartHour}
 							type="number"
@@ -298,8 +306,8 @@
 
 				<!-- End -->
 				<div class="form-control">
-					<label class="label">End *</label>
-					<div class="flex gap-2">
+					<label class="label" for="add-class-time-end">End *</label>
+					<div id="add-class-time-end" class="flex gap-2">
 						<input
 							bind:value={addClassEndHour}
 							type="number"
@@ -318,8 +326,9 @@
 
 				<!-- Capacity -->
 				<div class="form-control">
-					<label class="label">Capacity</label>
+					<label class="label" for="add-class-capacity">Capacity</label>
 					<input
+						id="add-class-capacity"
 						bind:value={addClassCapacity}
 						type="number"
 						placeholder="Max students (optional)"
@@ -329,8 +338,13 @@
 
 				<!-- Coach -->
 				<div class="form-control">
-					<label class="label">Coach</label>
-					<input bind:value={addClassCoach} type="text" class="input input-bordered w-full" />
+					<label class="label" for="add-class-coach">Coach</label>
+					<input
+						id="add-class-coach"
+						bind:value={addClassCoach}
+						type="text"
+						class="input input-bordered w-full"
+					/>
 				</div>
 			</div>
 
