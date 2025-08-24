@@ -1,4 +1,5 @@
 <script>
+	import '../app.css';
 	import { onMount } from 'svelte';
 	import { z } from 'zod';
 
@@ -155,78 +156,53 @@
 </script>
 
 <!-- Tabs -->
-<div class="tabs fixed top-0 grid w-full grid-cols-7">
-	{#each Object.keys(schedule) as day}
-		<button
-			class="tab tab-bordered"
-			class:tab-active={dayToday === day}
-			onclick={() => (dayToday = day)}
-		>
-			{day.slice(0, 3).toUpperCase()}
-		</button>
-	{/each}
-</div>
-
 <!-- Schedule -->
-{#each Object.keys(schedule) as day}
-	{#if dayToday === day}
+<div class="tabs tabs-lift fixed top-0 grid w-full grid-cols-7">
+	{#each Object.keys(schedule) as day}
+		<input type="radio" name="days" class="tab" aria-label={day.slice(0, 3).toUpperCase()} />
 		{#each schedule[day] as event}
 			<!-- DaisyUI Card -->
-			<div class="card bg-base-100 my-2 shadow-md">
-				<div class="card-body p-4">
-					<div class="flex flex-row items-center">
-						<div class="rounded-lg bg-blue-400 p-2 font-bold text-black">
-							<p>{formatTime(event.start)}</p>
-							<p class="text-xs">{getDuration(formatTime(event.start), formatTime(event.end))}</p>
+			<div class="tab-content p-6">
+				<div class="card card-border w-full">
+					<div class="card-body">
+						<h2 class="card-title">Card Title</h2>
+						<p>
+							A card component has a figure, a body part, and inside body there are title and
+							actions parts
+						</p>
+						<div class="card-actions justify-end">
+							<button class="btn btn-primary">Buy Now</button>
 						</div>
-						<div class="ml-4">
-							<h1 class="text-lg font-semibold">{event.title}</h1>
-							<p class="text-sm opacity-70">{event.coach}</p>
-						</div>
-					</div>
-					{#if event.capacity}
-						<progress
-							class="progress progress-primary mt-2 w-full"
-							value={event.bookings_count}
-							max={event.capacity}
-						></progress>
-					{/if}
-
-					<div class="card-actions mt-4 justify-end">
-						<button class="btn btn-primary">Book</button>
-						<button class="btn" onclick={showDetailsModal}> Details </button>
 					</div>
 				</div>
-			</div>
-
-			<!-- Details Modal -->
-			<dialog id="details_modal" class="modal">
-				<div class="modal-box">
-					<h3 class="text-lg font-bold">{event.title}</h3>
-					<p class="py-2">{formatTime(event.start)} - {formatTime(event.end)}</p>
-					<div class="mt-2 flex items-center gap-4">
-						<div class="avatar">
-							<div class="w-12 rounded-full">
-								<img src="https://avatars.githubusercontent.com/u/33540116" alt="Coach" />
+				<div class="card my-2 bg-base-100 shadow-md">
+					<div class="card-body p-4">
+						<div class="flex flex-row items-center">
+							<div class="rounded-lg p-2 font-bold text-black">
+								<p>{formatTime(event.start)}</p>
+								<p class="text-xs">
+									{getDuration(formatTime(event.start), formatTime(event.end))}
+								</p>
+							</div>
+							<div class="ml-4">
+								<h1 class="text-lg font-semibold">{event.title}</h1>
+								<p class="text-sm opacity-70">{event.coach}</p>
 							</div>
 						</div>
-						<div>
-							<h3 class="text-md font-medium">{event.coach}</h3>
-						</div>
-					</div>
-					<div class="modal-action">
-						<form method="dialog">
-							<button class="btn">Close</button>
-						</form>
-						{#if isAdmin}
-							<button class="btn btn-error" onclick={deleteClass}>Delete Class</button>
+
+						{#if event.capacity}
+							<progress
+								class="progress progress-primary mt-2 w-full"
+								value={event.bookings_count}
+								max={event.capacity}
+							></progress>
 						{/if}
 					</div>
 				</div>
-			</dialog>
+			</div>
 		{/each}
-	{/if}
-{/each}
+	{/each}
+</div>
 
 <!-- Add Class Button -->
 {#if isAdmin}
@@ -252,7 +228,7 @@
 				<!-- Day -->
 				<div class="form-control">
 					<label class="label" for="add-class-day">Day *</label>
-					<select id="add-class-day" bind:value={addClassDay} class="select select-bordered w-full">
+					<select id="add-class-day" bind:value={addClassDay} class="select-bordered select w-full">
 						{#each weekdays as day}
 							<option value={day.value}>{day.label}</option>
 						{/each}
@@ -266,7 +242,7 @@
 						id="add-class-title"
 						bind:value={addClassTitle}
 						type="text"
-						class="input input-bordered w-full"
+						class="input-bordered input w-full"
 					/>
 					{#if addClassFormErrors.title}
 						<p class="text-sm text-red-500">{addClassFormErrors.title[0]}</p>
@@ -279,7 +255,7 @@
 					<textarea
 						id="add-class-description"
 						bind:value={addClassDescription}
-						class="textarea textarea-bordered w-full"
+						class="textarea-bordered textarea w-full"
 					></textarea>
 				</div>
 
@@ -291,14 +267,14 @@
 							bind:value={addClassStartHour}
 							type="number"
 							placeholder="00"
-							class="input input-bordered w-16"
+							class="input-bordered input w-16"
 						/>
 						<span>:</span>
 						<input
 							bind:value={addClassStartMinute}
 							type="number"
 							placeholder="00"
-							class="input input-bordered w-16"
+							class="input-bordered input w-16"
 						/>
 					</div>
 				</div>
@@ -311,14 +287,14 @@
 							bind:value={addClassEndHour}
 							type="number"
 							placeholder="00"
-							class="input input-bordered w-16"
+							class="input-bordered input w-16"
 						/>
 						<span>:</span>
 						<input
 							bind:value={addClassEndMinute}
 							type="number"
 							placeholder="00"
-							class="input input-bordered w-16"
+							class="input-bordered input w-16"
 						/>
 					</div>
 				</div>
@@ -331,7 +307,7 @@
 						bind:value={addClassCapacity}
 						type="number"
 						placeholder="Max students (optional)"
-						class="input input-bordered w-full"
+						class="input-bordered input w-full"
 					/>
 				</div>
 
@@ -342,7 +318,7 @@
 						id="add-class-coach"
 						bind:value={addClassCoach}
 						type="text"
-						class="input input-bordered w-full"
+						class="input-bordered input w-full"
 					/>
 				</div>
 			</div>
