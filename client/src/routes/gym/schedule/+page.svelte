@@ -1,6 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-	import { z } from 'zod';
 
 	const baseURL = 'http://127.0.0.1:8000';
 	const gymID = '1'; // TODO: Add to store
@@ -72,21 +71,21 @@
 	let addClassCapacity = null;
 	let addClassCoach = null;
 
-	const addClassFormSchema = z.object({
-		day: z.enum(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'], { message: 'Day is required' }),
-		title: z
-			.string()
-			.min(1, { message: 'Title is required' })
-			.max(20, { message: 'Title must be less than 20 characters' })
-			.trim(),
-		description: z.string().max(200),
-		startHour: z.number(),
-		startMinute: z.number(),
-		endHour: z.number(),
-		endMinute: z.number(),
-		capacity: z.number(),
-		coach: z.string().max(20).trim()
-	});
+	// const addClassFormSchema = z.object({
+	// 	day: z.enum(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'], { message: 'Day is required' }),
+	// 	title: z
+	// 		.string()
+	// 		.min(1, { message: 'Title is required' })
+	// 		.max(20, { message: 'Title must be less than 20 characters' })
+	// 		.trim(),
+	// 	description: z.string().max(200),
+	// 	startHour: z.number(),
+	// 	startMinute: z.number(),
+	// 	endHour: z.number(),
+	// 	endMinute: z.number(),
+	// 	capacity: z.number(),
+	// 	coach: z.string().max(20).trim()
+	// });
 
 	async function postAddClassData() {
 		addClassFormErrors = {};
