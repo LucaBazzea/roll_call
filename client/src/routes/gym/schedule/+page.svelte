@@ -154,7 +154,7 @@
 </script>
 
 <!-- Days of the week tabs -->
-<div class="tabs tabs-box w-full">
+<div class="tabs tabs-box w-full tabs-sm">
 	{#each Object.keys(schedule) as day}
 		{#if day === dayToday}
 			<input
