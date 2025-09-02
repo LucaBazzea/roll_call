@@ -56,6 +56,19 @@
 	let isAdmin = true;
 	let dayToday = 'mon';
 
+	let selectedClass = null;
+	let showClassModal = false;
+
+	function openClassModal(event) {
+		selectedClass = event;
+		showClassModal = true;
+	}
+
+	function closeClassModal() {
+		selectedClass = null;
+		showClassModal = false;
+	}
+
 	let addClassModal;
 	let addClassErrorFlag = false;
 	let addClassFormErrors = {};
@@ -177,33 +190,68 @@
 		{#each schedule[day] as event}
 			<div class="tab-content p-6">
 				<div class="card my-2 bg-base-100 shadow-md">
-					<div class="card-body p-4">
-						<div class="flex flex-row items-center">
-							<div class="rounded-lg p-2 font-bold text-black">
-								<p>{formatTime(event.start)}</p>
-								<p class="text-xs">
-									{getDuration(formatTime(event.start), formatTime(event.end))}
-								</p>
+					<button class="cursor-pointer" onclick={() => openClassModal(event)}>
+						<div class="card-body p-4">
+							<div class="flex flex-row items-center">
+								<div class="rounded-lg p-2 font-bold text-black">
+									<p>{formatTime(event.start)}</p>
+									<p class="text-xs">
+										{getDuration(formatTime(event.start), formatTime(event.end))}
+									</p>
+								</div>
+								<div class="ml-4">
+									<h1 class="text-lg font-semibold">{event.title}</h1>
+									<p class="text-sm opacity-70">{event.coach}</p>
+								</div>
 							</div>
-							<div class="ml-4">
-								<h1 class="text-lg font-semibold">{event.title}</h1>
-								<p class="text-sm opacity-70">{event.coach}</p>
-							</div>
-						</div>
 
-						{#if event.capacity}
-							<progress
-								class="progress progress-primary mt-2 w-full"
-								value={event.bookings_count}
-								max={event.capacity}
-							></progress>
-						{/if}
-					</div>
+							{#if event.capacity}
+								<progress
+									class="progress progress-primary mt-2 w-full"
+									value={event.bookings_count}
+									max={event.capacity}
+								></progress>
+							{/if}
+						</div>
+					</button>
 				</div>
 			</div>
 		{/each}
 	{/each}
 </div>
+
+<!-- Class Information Modal -->
+{#if showClassModal && selectedClass}
+	<div class="modal modal-open">
+		<div class="modal-box">
+			<h2 class="font-bold text-xl mb-2">{selectedClass.title}</h2>
+			<p class="mb-2">{selectedClass.description}</p>
+
+			<p><strong>Coach:</strong> {selectedClass.coach}</p>
+			<p>
+				<strong>Time:</strong>
+				{formatTime(selectedClass.start)} - {formatTime(selectedClass.end)}
+			</p>
+			<p><strong>Duration:</strong> {getDuration(selectedClass.start, selectedClass.end)}</p>
+
+			{#if selectedClass.capacity}
+				<p class="mt-2">
+					<strong>Bookings:</strong>
+					{selectedClass.bookings_count}/{selectedClass.capacity}
+				</p>
+				<progress
+					class="progress progress-primary w-full"
+					value={selectedClass.bookings_count}
+					max={selectedClass.capacity}
+				></progress>
+			{/if}
+
+			<div class="modal-action">
+				<button class="btn" onclick={closeClassModal}>Close</button>
+			</div>
+		</div>
+	</div>
+{/if}
 
 <!-- Add Class Button -->
 {#if isAdmin}
