@@ -155,24 +155,28 @@
 
 <!-- Tabs -->
 <!-- Schedule -->
-<div class="tabs tabs-lift fixed top-0 grid w-full grid-cols-7">
+<div class="tabs tabs-box w-full">
 	{#each Object.keys(schedule) as day}
-		<input type="radio" name="days" class="tab" aria-label={day.slice(0, 3).toUpperCase()} />
+		{#if day === dayToday}
+			<input
+				type="radio"
+				name="days"
+				class="tab flex-1"
+				aria-label={day.slice(0, 3).toUpperCase()}
+				checked="checked"
+			/>
+		{:else}
+			<input
+				type="radio"
+				name="days"
+				class="tab flex-1"
+				aria-label={day.slice(0, 3).toUpperCase()}
+			/>
+		{/if}
+
 		{#each schedule[day] as event}
 			<!-- DaisyUI Card -->
 			<div class="tab-content p-6">
-				<div class="card card-border w-full">
-					<div class="card-body">
-						<h2 class="card-title">Card Title</h2>
-						<p>
-							A card component has a figure, a body part, and inside body there are title and
-							actions parts
-						</p>
-						<div class="card-actions justify-end">
-							<button class="btn btn-primary">Buy Now</button>
-						</div>
-					</div>
-				</div>
 				<div class="card my-2 bg-base-100 shadow-md">
 					<div class="card-body p-4">
 						<div class="flex flex-row items-center">
