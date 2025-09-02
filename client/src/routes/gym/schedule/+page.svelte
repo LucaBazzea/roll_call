@@ -153,8 +153,7 @@
 	});
 </script>
 
-<!-- Tabs -->
-<!-- Schedule -->
+<!-- Days of the week tabs -->
 <div class="tabs tabs-box w-full">
 	{#each Object.keys(schedule) as day}
 		{#if day === dayToday}
@@ -174,8 +173,8 @@
 			/>
 		{/if}
 
+		<!-- Classes -->
 		{#each schedule[day] as event}
-			<!-- DaisyUI Card -->
 			<div class="tab-content p-6">
 				<div class="card my-2 bg-base-100 shadow-md">
 					<div class="card-body p-4">
