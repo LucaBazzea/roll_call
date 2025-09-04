@@ -234,7 +234,7 @@
 
 			<p><strong>Duration:</strong> {getDuration(selectedClass.start, selectedClass.end)}</p>
 
-			<p><strong>Description:</strong> {selectedClass.notes}</p>
+			<p><strong>Description:</strong> {selectedClass.description}</p>
 
 			{#if selectedClass.capacity}
 				<p class="mt-2">

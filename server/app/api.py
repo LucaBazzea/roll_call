@@ -194,7 +194,7 @@ def get_schedule(request, data: schema.GymSchema):
             "capacity": row["capacity"],
             "bookings_count": bookings_count,
             "colour": row["colour_hex"],
-            "notes": row["notes"],
+            "description": row["description"],
             "coach": row["coach__username"]
         }
         schedule[row["day"]].append(classe)

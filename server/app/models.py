@@ -32,7 +32,7 @@ class Class(models.Model):
     time_end = models.TimeField()
     capacity = models.PositiveSmallIntegerField(null=True, default=None)
     colour_hex = models.CharField(max_length=7, null=True)
-    notes = models.TextField(null=True)
+    description = models.TextField(null=True)
     cancelled = models.BooleanField(default=False)
 
 
