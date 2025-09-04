@@ -169,7 +169,7 @@ def get_schedule(request, data: schema.GymSchema):
         "time_end",
         "capacity",
         "colour_hex",
-        "notes",
+        "description",
         "cancelled",
         "coach__username"
     )
