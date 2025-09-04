@@ -193,9 +193,9 @@
 					<button class="cursor-pointer" onclick={() => openClassModal(event)}>
 						<div class="card-body p-4">
 							<div class="flex flex-row items-center">
-								<div class="rounded-lg p-2 font-bold text-black">
+								<div class="rounded-lg p-2 font-bold text-black text-left bg-blue-400">
 									<p>{formatTime(event.start)}</p>
-									<p class="text-xs">
+									<p class="text-xs text-left">
 										{getDuration(formatTime(event.start), formatTime(event.end))}
 									</p>
 								</div>
@@ -227,24 +227,23 @@
 			<h2 class="font-bold text-xl mb-2">{selectedClass.title}</h2>
 			<p class="mb-2">{selectedClass.description}</p>
 
-			<p><strong>Coach:</strong> {selectedClass.coach}</p>
 			<p>
 				<strong>Time:</strong>
 				{formatTime(selectedClass.start)} - {formatTime(selectedClass.end)}
 			</p>
+
 			<p><strong>Duration:</strong> {getDuration(selectedClass.start, selectedClass.end)}</p>
+
+			<p><strong>Description:</strong> {selectedClass.notes}</p>
 
 			{#if selectedClass.capacity}
 				<p class="mt-2">
 					<strong>Bookings:</strong>
 					{selectedClass.bookings_count}/{selectedClass.capacity}
 				</p>
-				<progress
-					class="progress progress-primary w-full"
-					value={selectedClass.bookings_count}
-					max={selectedClass.capacity}
-				></progress>
 			{/if}
+
+			<p><strong>Coach:</strong> {selectedClass.coach}</p>
 
 			<div class="modal-action">
 				<button class="btn" onclick={closeClassModal}>Close</button>
