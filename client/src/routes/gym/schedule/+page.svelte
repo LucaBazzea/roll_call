@@ -89,6 +89,7 @@
 		addClassErrorFlag = false;
 
 		const addClassData = {
+			gym_id: gymID,
 			day: addClassDay,
 			title: addClassTitle,
 			description: addClassDescription,
