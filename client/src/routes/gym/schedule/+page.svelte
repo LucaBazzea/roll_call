@@ -4,6 +4,8 @@
 	const baseURL = 'http://127.0.0.1:8000';
 	const gymID = '1'; // TODO: Add to store
 
+	let csrftoken = null;
+
 	const weekdays = [
 		{ label: 'Monday', value: 'mon' },
 		{ label: 'Tuesday', value: 'tue' },
@@ -77,30 +79,12 @@
 	$: addClassDay = dayToday;
 	let addClassTitle = null;
 	let addClassDescription = null;
-	let addClassStartHour = null;
-	let addClassStartMinute = null;
-	let addClassEndHour = null;
-	let addClassEndMinute = null;
+	let addClassStartTime = null;
+	let addClassEndTime = null;
 	let addClassCapacity = null;
 	let addClassCoach = null;
 
-	// const addClassFormSchema = z.object({
-	// 	day: z.enum(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'], { message: 'Day is required' }),
-	// 	title: z
-	// 		.string()
-	// 		.min(1, { message: 'Title is required' })
-	// 		.max(20, { message: 'Title must be less than 20 characters' })
-	// 		.trim(),
-	// 	description: z.string().max(200),
-	// 	startHour: z.number(),
-	// 	startMinute: z.number(),
-	// 	endHour: z.number(),
-	// 	endMinute: z.number(),
-	// 	capacity: z.number(),
-	// 	coach: z.string().max(20).trim()
-	// });
-
-	async function postAddClassData() {
+	async function postAddClass() {
 		addClassFormErrors = {};
 		addClassErrorFlag = false;
 
@@ -108,35 +92,28 @@
 			day: addClassDay,
 			title: addClassTitle,
 			description: addClassDescription,
-			startHour: Number(addClassStartHour),
-			startMinute: Number(addClassStartMinute),
-			endHour: Number(addClassEndHour),
-			endMinute: Number(addClassEndMinute),
-			capacity: Number(addClassCapacity),
+			time_start: addClassStartTime,
+			time_end: addClassEndTime,
+			capacity: addClassCapacity ? Number(addClassCapacity) : null,
 			coach: addClassCoach
 		};
 
-		const result = addClassFormSchema.safeParse(addClassData);
-		if (!result.success) {
-			addClassErrorFlag = true;
-			addClassFormErrors = result.error.flatten().fieldErrors;
-			return;
-		}
-
 		try {
-			const response = await fetch(`${baseURL}/admin/class/create/`, {
+			const response = await fetch(`${baseURL}/app/admin/class/create/`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(addClassData)
+				headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+				body: JSON.stringify(addClassData),
+				credentials: 'include'
 			});
 
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
 
-			console.log('Class created:', await response.json());
+			console.log('Class created');
+			addClassModal.close();
 		} catch (error) {
-			console.error('Failed to create class:', error);
+			console.error('Failed to create class');
 			addClassErrorFlag = true;
 		}
 	}
@@ -163,6 +140,12 @@
 		} catch (error) {
 			console.error('Failed to fetch schedule:', error);
 		}
+
+		csrftoken = document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('csrftoken='))
+			?.split('=')[1];
+		console.log(csrftoken);
 	});
 </script>
 
@@ -255,14 +238,14 @@
 <!-- Add Class Button -->
 {#if isAdmin}
 	<div class="fixed bottom-0 w-full">
-		<button class="btn btn-secondary w-full rounded-none" onclick={() => addClassModal.showModal()}
-			>Add Class</button
-		>
+		<button class="btn btn-secondary w-full rounded-none" onclick={() => addClassModal.showModal()}>
+			Add Class
+		</button>
 	</div>
 
 	<!-- Add Class Modal -->
 	<dialog bind:this={addClassModal} class="modal">
-		<div class="modal-box w-11/12 max-w-2xl">
+		<div class="modal-box max-w-md">
 			<h3 class="text-lg font-bold">Add Class</h3>
 			<p class="py-2">Fill in class info here. Click save when you're done.</p>
 
@@ -276,7 +259,7 @@
 				<!-- Day -->
 				<div class="form-control">
 					<label class="label" for="add-class-day">Day *</label>
-					<select id="add-class-day" bind:value={addClassDay} class="select-bordered select w-full">
+					<select id="add-class-day" bind:value={addClassDay} class="select select-bordered w-full">
 						{#each weekdays as day}
 							<option value={day.value}>{day.label}</option>
 						{/each}
@@ -290,7 +273,7 @@
 						id="add-class-title"
 						bind:value={addClassTitle}
 						type="text"
-						class="input-bordered input w-full"
+						class="input input-bordered w-full"
 					/>
 					{#if addClassFormErrors.title}
 						<p class="text-sm text-red-500">{addClassFormErrors.title[0]}</p>
@@ -303,59 +286,40 @@
 					<textarea
 						id="add-class-description"
 						bind:value={addClassDescription}
-						class="textarea-bordered textarea w-full"
+						class="textarea textarea-bordered w-full"
 					></textarea>
 				</div>
 
 				<!-- Start -->
 				<div class="form-control">
 					<label class="label" for="add-class-time-start">Start *</label>
-					<div id="add-class-time-start" class="flex gap-2">
-						<input
-							bind:value={addClassStartHour}
-							type="number"
-							placeholder="00"
-							class="input-bordered input w-16"
-						/>
-						<span>:</span>
-						<input
-							bind:value={addClassStartMinute}
-							type="number"
-							placeholder="00"
-							class="input-bordered input w-16"
-						/>
-					</div>
+					<input
+						id="add-class-time-start"
+						bind:value={addClassStartTime}
+						type="time"
+						class="input input-bordered w-40"
+					/>
 				</div>
 
 				<!-- End -->
 				<div class="form-control">
 					<label class="label" for="add-class-time-end">End *</label>
-					<div id="add-class-time-end" class="flex gap-2">
-						<input
-							bind:value={addClassEndHour}
-							type="number"
-							placeholder="00"
-							class="input-bordered input w-16"
-						/>
-						<span>:</span>
-						<input
-							bind:value={addClassEndMinute}
-							type="number"
-							placeholder="00"
-							class="input-bordered input w-16"
-						/>
-					</div>
+					<input
+						id="add-class-time-end"
+						bind:value={addClassEndTime}
+						type="time"
+						class="input input-bordered w-40"
+					/>
 				</div>
 
 				<!-- Capacity -->
 				<div class="form-control">
-					<label class="label" for="add-class-capacity">Capacity</label>
+					<label class="label" for="add-class-capacity">Maximum Capacity</label>
 					<input
 						id="add-class-capacity"
 						bind:value={addClassCapacity}
 						type="number"
-						placeholder="Max students (optional)"
-						class="input-bordered input w-full"
+						class="input input-bordered w-full"
 					/>
 				</div>
 
@@ -366,13 +330,13 @@
 						id="add-class-coach"
 						bind:value={addClassCoach}
 						type="text"
-						class="input-bordered input w-full"
+						class="input input-bordered w-full"
 					/>
 				</div>
 			</div>
 
 			<div class="modal-action">
-				<button class="btn btn-primary" onclick={postAddClassData}>Save changes</button>
+				<button class="btn btn-primary" onclick={postAddClass}> Save Changes </button>
 				<form method="dialog">
 					<button class="btn">Cancel</button>
 				</form>
