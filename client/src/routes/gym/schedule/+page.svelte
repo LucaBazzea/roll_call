@@ -1,27 +1,10 @@
 <script>
 	import { onMount } from 'svelte';
-	import { z } from 'zod';
-
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import * as Drawer from '$lib/components/ui/drawer';
-	import * as Avatar from '$lib/components/ui/avatar';
-	import * as Card from '$lib/components/ui/card/index.js';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
-	import * as Select from '$lib/components/ui/select';
-	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import CircleAlert from 'lucide-svelte/icons/circle-alert';
-	import * as Alert from '$lib/components/ui/alert/index.js';
-	import DialogFooter from '$lib/components/ui/dialog/dialog-footer.svelte';
-	import { Progress } from '$lib/components/ui/progress/index.js';
 
 	const baseURL = 'http://127.0.0.1:8000';
+	const gymID = 1; // TODO: Add to store
 
-	// TODO: Add to store
-	const gymID = '1';
+	let csrftoken = null;
 
 	const weekdays = [
 		{ label: 'Monday', value: 'mon' },
@@ -47,9 +30,7 @@
 		try {
 			const response = await fetch(`${baseURL}/app/schedule/`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ gym_id: gymID })
 			});
 
@@ -57,8 +38,7 @@
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
 
-			const jsonData = await response.json();
-			return jsonData;
+			return await response.json();
 		} catch (error) {
 			console.error('Failed to fetch schedule:', error);
 			return null;
@@ -75,88 +55,68 @@
 		sun: []
 	};
 
-	// TODO: Put this in store
 	let isAdmin = true;
-
-	// TODO: Get the day today
 	let dayToday = 'mon';
 
-	let addClassErrorFlag = false;
+	let selectedClass = null;
+	let showClassModal = false;
 
+	function openClassModal(event) {
+		selectedClass = event;
+		showClassModal = true;
+	}
+
+	function closeClassModal() {
+		selectedClass = null;
+		showClassModal = false;
+	}
+
+	let addClassModal;
+	let addClassErrorFlag = false;
+	let addClassFormErrors = {};
+
+	// form fields
 	$: addClassDay = dayToday;
-  let addClassTitle = null;
+	let addClassTitle = null;
 	let addClassDescription = null;
-	let addClassStartHour = null;
-	let addClassStartMinute = null;
-	let addClassEndHour = null;
-	let addClassEndMinute = null;
+	let addClassStartTime = null;
+	let addClassEndTime = null;
 	let addClassCapacity = null;
 	let addClassCoach = null;
 
-	let addClassFormErrors = {};
-	const addClassFormSchema = z.object({
-		day: z.enum(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'], { message: 'Day is required' }),
-		title: z
-			.string()
-			.min(1, { message: 'Title is required' })
-			.max(20, { message: 'Title must be less than 20 characters' })
-			.trim(),
-		description: z.string().max(200),
-		startHour: z.number(),
-		startMinute: z.number(),
-		endHour: z.number(),
-		endMinute: z.number(),
-		capacity: z.number(),
-		coach: z.string().max(20).trim()
-	});
+	async function postAddClass() {
+		addClassFormErrors = {};
+		addClassErrorFlag = false;
 
-	async function postAddClassData() {
-	  addClassFormErrors = {};
-	addClassErrorFlag = false;
+		const addClassData = {
+			gym_id: gymID,
+			day: addClassDay,
+			title: addClassTitle,
+			description: addClassDescription,
+			time_start: addClassStartTime,
+			time_end: addClassEndTime,
+			capacity: addClassCapacity ? Number(addClassCapacity) : null,
+			coach: addClassCoach
+		};
 
-	const addClassData = {
-		day: addClassDay,
-		title: addClassTitle,
-		description: addClassDescription,
-		startHour: Number(addClassStartHour),
-		startMinute: Number(addClassStartMinute),
-		endHour: Number(addClassEndHour),
-		endMinute: Number(addClassEndMinute),
-		capacity: Number(addClassCapacity),
-		coach: addClassCoach
-	};
+		try {
+			const response = await fetch(`${baseURL}/app/admin/class/create/`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+				body: JSON.stringify(addClassData),
+				credentials: 'include'
+			});
 
-	// validate
-	const result = addClassFormSchema.safeParse(addClassData);
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
 
-	if (!result.success) {
-		addClassErrorFlag = true;
-
-		// collect errors
-		addClassFormErrors = result.error.flatten().fieldErrors;
-		console.error('Validation errors', addClassFormErrors);
-		return;
-	}
-
-	// no errors, send to API
-	try {
-		const response = await fetch(`${baseURL}/admin/class/create/`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(addClassData)
-		});
-
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+			console.log('Class created');
+			addClassModal.close();
+		} catch (error) {
+			console.error('Failed to create class');
+			addClassErrorFlag = true;
 		}
-
-		const data = await response.json();
-		console.log('Class created:', data);
-	} catch (error) {
-		console.error('Failed to create class:', error);
-		addClassErrorFlag = true;
-	}
-}
 	}
 
 	function deleteClass() {
@@ -177,240 +137,210 @@
 
 	onMount(async () => {
 		try {
-			schedule = await getSchedule(1); // Replace 1 with the actual gymID value
-			console.log('Schedule:', schedule);
+			schedule = await getSchedule();
 		} catch (error) {
 			console.error('Failed to fetch schedule:', error);
 		}
+
+		csrftoken = document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('csrftoken='))
+			?.split('=')[1];
 	});
 </script>
 
-<Tabs.Root value={dayToday} class="relative w-full pb-12 pt-10">
-	<Tabs.List class="fixed top-0 grid w-full grid-cols-7 rounded-none">
-		<Tabs.Trigger value="mon">Mon</Tabs.Trigger>
-		<Tabs.Trigger value="tue">Tue</Tabs.Trigger>
-		<Tabs.Trigger value="wed">Wed</Tabs.Trigger>
-		<Tabs.Trigger value="thu">Thu</Tabs.Trigger>
-		<Tabs.Trigger value="fri">Fri</Tabs.Trigger>
-		<Tabs.Trigger value="sat">Sat</Tabs.Trigger>
-		<Tabs.Trigger value="sun">Sun</Tabs.Trigger>
-	</Tabs.List>
-
+<!-- Days of the week tabs -->
+<div class="tabs tabs-box w-full tabs-sm">
 	{#each Object.keys(schedule) as day}
-		<Tabs.Content value={day}>
-			{#each schedule[day] as event}
-				<Drawer.Root>
-					<Drawer.Trigger class="w-full p-2">
-						<div class="flex flex-col rounded-md border px-4 py-3">
-							<div class="flex flex-row">
-								<div class="my-auto rounded-lg bg-blue-400 p-2">
-									<p class="text-md font-bold text-black">{formatTime(event.start)}</p>
-									<p class="text-xs font-bold text-black">
+		{#if day === dayToday}
+			<input
+				type="radio"
+				name="days"
+				class="tab flex-1"
+				aria-label={day.slice(0, 3).toUpperCase()}
+				checked="checked"
+			/>
+		{:else}
+			<input
+				type="radio"
+				name="days"
+				class="tab flex-1"
+				aria-label={day.slice(0, 3).toUpperCase()}
+			/>
+		{/if}
+
+		<!-- Classes -->
+		{#each schedule[day] as event}
+			<div class="tab-content p-6">
+				<div class="card my-2 bg-base-100 shadow-md">
+					<button class="cursor-pointer" onclick={() => openClassModal(event)}>
+						<div class="card-body p-4">
+							<div class="flex flex-row items-center">
+								<div class="rounded-lg p-2 font-bold text-black text-left bg-blue-400">
+									<p>{formatTime(event.start)}</p>
+									<p class="text-xs text-left">
 										{getDuration(formatTime(event.start), formatTime(event.end))}
 									</p>
 								</div>
-								<div class="mx-4 my-auto flex flex-col text-left">
-									<h1 class="text-lg">{event.title}</h1>
-									<Card.Description>
-										{event.coach}
-									</Card.Description>
+								<div class="ml-4">
+									<h1 class="text-lg font-semibold">{event.title}</h1>
+									<p class="text-sm opacity-70">{event.coach}</p>
 								</div>
 							</div>
-							{#if event.capacity}
-								<div class="mt-4">
-									<Progress value={event.bookings_count} max={event.capacity} class="h-1" />
-								</div>
-							{/if}
-						</div>
-					</Drawer.Trigger>
-					<Drawer.Content>
-						<Drawer.Header>
-							<Drawer.Title>
-								<h1 class="text-lg">
-									{event.title}
-								</h1>
-							</Drawer.Title>
-							<Drawer.Description>
-								{formatTime(event.start)} - {formatTime(event.end)}
-							</Drawer.Description>
-							<div class="flex flex-row rounded-md border px-4 py-3">
-								<Avatar.Root>
-									<Avatar.Image
-										src="https://avatars.githubusercontent.com/u/33540116"
-										alt="Coach's Avatar"
-									/>
-									<Avatar.Fallback>Coach</Avatar.Fallback>
-								</Avatar.Root>
-								<div class="mx-4 my-auto flex flex-col">
-									<h3 class="text-md">{event.coach}</h3>
-								</div>
-							</div>
-						</Drawer.Header>
-						<Drawer.Footer>
-							<Button>Book</Button>
-							<Drawer.Close>
-								<Button class="w-full" variant="outline">Close</Button>
-							</Drawer.Close>
-							{#if isAdmin === true}
-								<Dialog.Root>
-									<Dialog.Trigger>
-										<Button variant="secondary" class="mt-6 w-full">Delete Class</Button>
-									</Dialog.Trigger>
-									<Dialog.Content>
-										<Dialog.Header>
-											<Dialog.Title>Delete Class</Dialog.Title>
-											<Dialog.Description>Are you sure?</Dialog.Description>
-										</Dialog.Header>
-										<DialogFooter>
-											<Button variant="destructive" on:click={deleteClass}>Delete</Button>
-										</DialogFooter>
-									</Dialog.Content>
-								</Dialog.Root>
-							{/if}
-						</Drawer.Footer>
-					</Drawer.Content>
-				</Drawer.Root>
-			{/each}
-		</Tabs.Content>
-	{/each}
 
-	{#if isAdmin}
-		<div class="fixed bottom-0 w-full">
-			<Dialog.Root>
-				<Dialog.Trigger class="w-full">
-					<Button variant="secondary" class="w-full rounded-none text-center">Add Class</Button>
-				</Dialog.Trigger>
-				<Dialog.Content class="sm:max-w-[425px]">
-					<Dialog.Header>
-						<Dialog.Title>Add Class</Dialog.Title>
-						<Dialog.Description>
-							Fill in class info here. Click save when you're done.
-						</Dialog.Description>
-					</Dialog.Header>
-					{#if addClassErrorFlag}
-						<Alert.Root class="text-left">
-							<CircleAlert class="h-4 w-4" />
-							<Alert.Title>Alert</Alert.Title>
-							<Alert.Description>Please fill in the missing information</Alert.Description>
-						</Alert.Root>
-					{/if}
-					<div class="grid gap-4 py-4">
-						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="addClassDay" class="text-right">Day *</Label>
-							<Select.Root bind:value={addClassDay}>
-								<Select.Trigger class="w-[180px]">
-									<Select.Value placeholder={weekdayAbbreviations[addClassDay]} />
-								</Select.Trigger>
-								<Select.Content>
-									<Select.Group>
-										<Select.Item value="mon" label="Monday" />
-										<Select.Item value="tue" label="Tuesday" />
-										<Select.Item value="wed" label="Wednesday" />
-										<Select.Item value="thu" label="Thursday" />
-										<Select.Item value="fri" label="Friday" />
-										<Select.Item value="sat" label="Saturday" />
-										<Select.Item value="sun" label="Sunday" />
-									</Select.Group>
-								</Select.Content>
-							</Select.Root>
-						</div>
-						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="addClassTitle" class="text-right">Title *</Label>
-							<Input id="addClassTitle" bind:value={addClassTitle} class="col-span-3" />
-							{#if addClassFormErrors.title}
-								<p class="mt-1 text-sm text-red-500">{formErrors.title[0]}</p>
+							{#if event.capacity}
+								<progress
+									class="progress progress-primary mt-2 w-full"
+									value={event.bookings_count}
+									max={event.capacity}
+								></progress>
 							{/if}
 						</div>
-						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="addClassDescription" class="text-right">Description</Label>
-							<Textarea
-								id="addClassDescription"
-								bind:value={addClassDescription}
-								class="col-span-3"
-								placeholder="Description (optional)"
-							/>
-							{#if addClassFormErrors.description}
-								<p class="mt-1 text-sm text-red-500">{formErrors.title[0]}</p>
-							{/if}
-						</div>
-						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="addClass" class="text-right">Start *</Label>
-							<div class="col-span-3 flex flex-row space-x-1">
-								<Input
-									id="addClassStartHour"
-									bind:value={addClassStartHour}
-									placeholder="00"
-									type="number"
-									class=""
-								/>
-								{#if addClassFormErrors.startHour}
-									<p class="mt-1 text-sm text-red-500">{formErrors.title[0]}</p>
-								{/if}
-								<p>:</p>
-								<Input
-									id="addClassStartMinute"
-									bind:value={addClassStartMinute}
-									placeholder="00"
-									type="number"
-									class=""
-								/>
-								{#if addClassFormErrors.startMinute}
-									<p class="mt-1 text-sm text-red-500">{formErrors.title[0]}</p>
-								{/if}
-							</div>
-						</div>
-						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="username" class="text-right">End *</Label>
-							<div class="col-span-3 flex flex-row space-x-1">
-								<Input
-									id="addClassEndHour"
-									bind:value={addClassEndHour}
-									placeholder="00"
-									type="number"
-									class=""
-								/>
-								{#if addClassFormErrors.endHour}
-									<p class="mt-1 text-sm text-red-500">{formErrors.endHour[0]}</p>
-								{/if}
-								<p>:</p>
-								<Input
-									id="addClassEndMinute"
-									bind:value={addClassEndMinute}
-									placeholder="00"
-									type="number"
-									class=""
-								/>
-								{#if addClassFormErrors.endMinute}
-									<p class="mt-1 text-sm text-red-500">{formErrors.endMinute[0]}</p>
-								{/if}
-							</div>
-						</div>
-						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="addClassCapacity" class="text-right">Capacity</Label>
-							<Input
-								id="addClassCapacity"
-								bind:value={addClassCapacity}
-								placeholder="What is the max no. of students? (optional)"
-								type="number"
-								class="col-span-3"
-							/>
-							{#if addClassFormErrors.capacity}
-								<p class="mt-1 text-sm text-red-500">{formErrors.capacity[0]}</p>
-							{/if}
-						</div>
-						<div class="grid grid-cols-4 items-center gap-4">
-							<Label for="addClassCoach" class="text-right">Coach</Label>
-							<Input id="addClassCoach" bind:value={addClassCoach} class="col-span-3" />
-							{#if addClassFormErrors.coach}
-								<p class="mt-1 text-sm text-red-500">{formErrors.coach[0]}</p>
-							{/if}
-						</div>
-					</div>
-					<Dialog.Footer>
-						<Button type="submit" on:click={postAddClassData}>Save changes</Button>
-					</Dialog.Footer>
-				</Dialog.Content>
-			</Dialog.Root>
+					</button>
+				</div>
+			</div>
+		{/each}
+	{/each}
+</div>
+
+<!-- Class Information Modal -->
+{#if showClassModal && selectedClass}
+	<div class="modal modal-open">
+		<div class="modal-box">
+			<h2 class="font-bold text-xl mb-2">{selectedClass.title}</h2>
+			<p class="mb-2">{selectedClass.description}</p>
+
+			<p>
+				<strong>Time:</strong>
+				{formatTime(selectedClass.start)} - {formatTime(selectedClass.end)}
+			</p>
+
+			<p><strong>Duration:</strong> {getDuration(selectedClass.start, selectedClass.end)}</p>
+
+			<p><strong>Description:</strong> {selectedClass.description}</p>
+
+			{#if selectedClass.capacity}
+				<p class="mt-2">
+					<strong>Bookings:</strong>
+					{selectedClass.bookings_count}/{selectedClass.capacity}
+				</p>
+			{/if}
+
+			<p><strong>Coach:</strong> {selectedClass.coach}</p>
+
+			<div class="modal-action">
+				<button class="btn" onclick={closeClassModal}>Close</button>
+			</div>
 		</div>
-	{/if}
-</Tabs.Root>
+	</div>
+{/if}
+
+<!-- Add Class Button -->
+{#if isAdmin}
+	<div class="fixed bottom-0 w-full">
+		<button class="btn btn-secondary w-full rounded-none" onclick={() => addClassModal.showModal()}>
+			Add Class
+		</button>
+	</div>
+
+	<!-- Add Class Modal -->
+	<dialog bind:this={addClassModal} class="modal">
+		<div class="modal-box max-w-md">
+			<h3 class="text-lg font-bold">Add Class</h3>
+			<p class="py-2">Fill in class info here. Click save when you're done.</p>
+
+			{#if addClassErrorFlag}
+				<div class="alert alert-error my-2">
+					<span>Please fill in the missing information</span>
+				</div>
+			{/if}
+
+			<div class="grid gap-4 py-4">
+				<!-- Day -->
+				<div class="form-control">
+					<label class="label" for="add-class-day">Day *</label>
+					<select id="add-class-day" bind:value={addClassDay} class="select select-bordered w-full">
+						{#each weekdays as day}
+							<option value={day.value}>{day.label}</option>
+						{/each}
+					</select>
+				</div>
+
+				<!-- Title -->
+				<div class="form-control">
+					<label class="label" for="add-class-title">Title *</label>
+					<input
+						id="add-class-title"
+						bind:value={addClassTitle}
+						type="text"
+						class="input input-bordered w-full"
+					/>
+					{#if addClassFormErrors.title}
+						<p class="text-sm text-red-500">{addClassFormErrors.title[0]}</p>
+					{/if}
+				</div>
+
+				<!-- Description -->
+				<div class="form-control">
+					<label class="label" for="add-class-description">Description</label>
+					<textarea
+						id="add-class-description"
+						bind:value={addClassDescription}
+						class="textarea textarea-bordered w-full"
+					></textarea>
+				</div>
+
+				<!-- Start -->
+				<div class="form-control">
+					<label class="label" for="add-class-time-start">Start *</label>
+					<input
+						id="add-class-time-start"
+						bind:value={addClassStartTime}
+						type="time"
+						class="input input-bordered w-40"
+					/>
+				</div>
+
+				<!-- End -->
+				<div class="form-control">
+					<label class="label" for="add-class-time-end">End *</label>
+					<input
+						id="add-class-time-end"
+						bind:value={addClassEndTime}
+						type="time"
+						class="input input-bordered w-40"
+					/>
+				</div>
+
+				<!-- Capacity -->
+				<div class="form-control">
+					<label class="label" for="add-class-capacity">Maximum Capacity</label>
+					<input
+						id="add-class-capacity"
+						bind:value={addClassCapacity}
+						type="number"
+						class="input input-bordered w-full"
+					/>
+				</div>
+
+				<!-- Coach -->
+				<div class="form-control">
+					<label class="label" for="add-class-coach">Coach</label>
+					<input
+						id="add-class-coach"
+						bind:value={addClassCoach}
+						type="text"
+						class="input input-bordered w-full"
+					/>
+				</div>
+			</div>
+
+			<div class="modal-action">
+				<button class="btn btn-primary" onclick={postAddClass}> Save Changes </button>
+				<form method="dialog">
+					<button class="btn">Cancel</button>
+				</form>
+			</div>
+		</div>
+	</dialog>
+{/if}
