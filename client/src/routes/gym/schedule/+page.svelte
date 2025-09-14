@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 
 	const baseURL = 'http://127.0.0.1:8000';
-	const gymID = '1'; // TODO: Add to store
+	const gymID = 1; // TODO: Add to store
 
 	let csrftoken = null;
 
@@ -146,7 +146,6 @@
 			.split('; ')
 			.find((row) => row.startsWith('csrftoken='))
 			?.split('=')[1];
-		console.log(csrftoken);
 	});
 </script>
 

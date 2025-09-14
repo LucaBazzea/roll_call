@@ -22,11 +22,12 @@ class GymClassSchema(Schema):
     class_id: int
 
 class ClassSchema(Schema):
+    gym_id: int
     title: str
     day: str
     time_start: datetime.time
     time_end: datetime.time
-    capacity: int
-    colour_hex: str
-    notes: str
-    coach_user_id: int | None = None
+    capacity: int | None = None
+    colour_hex: str | None = None
+    description: str | None = None
+    coach: str | None = None

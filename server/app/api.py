@@ -110,25 +110,25 @@ def class_create(request, data: schema.ClassSchema):
     user_id = 1
 
     try:
-        gym_member = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).values("role")
+        gym_member = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).role
 
-        if gym_member["role"] is None:
-            return Response({"message": "Invalid permissions"}, status=403)
+        # if gym_member["role"] is None:
+        #    return Response({"message": "Invalid permissions"}, status=403)
 
     except models.GymMember.DoesNotExist:
         return Response({"message": "User / gym not found"}, status=402)
 
     try:
         class_new = models.Class(
-            data.title,
-            data.day,
-            data.time_start,
-            data.time_end,
-            data.capacity,
-            data.colour_hex,
-            data.notes,
-            data.cancelled,
-            data.coach_user_id
+            gym_id=data.gym_id,
+            title=data.title,
+            day=data.day,
+            time_start=data.time_start,
+            time_end=data.time_end,
+            capacity=data.capacity,
+            colour_hex=data.colour_hex,
+            description=data.description,
+            coach=data.coach
         )
         class_new.save()
     except Exception as error:
@@ -171,7 +171,7 @@ def get_schedule(request, data: schema.GymSchema):
         "colour_hex",
         "description",
         "cancelled",
-        "coach__username"
+        "coach"
     )
 
     bookings = models.ClassBooking.objects.filter(
@@ -195,7 +195,7 @@ def get_schedule(request, data: schema.GymSchema):
             "bookings_count": bookings_count,
             "colour": row["colour_hex"],
             "description": row["description"],
-            "coach": row["coach__username"]
+            "coach": row["coach"]
         }
         schedule[row["day"]].append(classe)
 
