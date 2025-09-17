@@ -57,6 +57,7 @@
 
 	let isAdmin = true;
 	let dayToday = 'mon';
+	let selectedDay = dayToday;
 
 	let selectedClass = null;
 	let showClassModal = false;
@@ -83,6 +84,12 @@
 	let addClassEndTime = null;
 	let addClassCapacity = null;
 	let addClassCoach = null;
+
+	function updateSelectedDay(day) {
+		console.log(day);
+		selectedDay = day;
+		console.log(selectedDay);
+	}
 
 	async function postAddClass() {
 		addClassFormErrors = {};
@@ -152,7 +159,7 @@
 <!-- Days of the week tabs -->
 <div class="tabs tabs-box w-full tabs-sm">
 	{#each Object.keys(schedule) as day}
-		{#if day === dayToday}
+		{#if day === selectedDay}
 			<input
 				type="radio"
 				name="days"
@@ -166,42 +173,43 @@
 				name="days"
 				class="tab flex-1"
 				aria-label={day.slice(0, 3).toUpperCase()}
+				onclick={() => updateSelectedDay(day)}
 			/>
 		{/if}
-
-		<!-- Classes -->
-		{#each schedule[day] as event}
-			<div class="tab-content p-6">
-				<div class="card my-2 bg-base-100 shadow-md">
-					<button class="cursor-pointer" onclick={() => openClassModal(event)}>
-						<div class="card-body p-4">
-							<div class="flex flex-row items-center">
-								<div class="rounded-lg p-2 font-bold text-black text-left bg-blue-400">
-									<p>{formatTime(event.start)}</p>
-									<p class="text-xs text-left">
-										{getDuration(formatTime(event.start), formatTime(event.end))}
-									</p>
-								</div>
-								<div class="ml-4">
-									<h1 class="text-lg font-semibold">{event.title}</h1>
-									<p class="text-sm opacity-70">{event.coach}</p>
-								</div>
-							</div>
-
-							{#if event.capacity}
-								<progress
-									class="progress progress-primary mt-2 w-full"
-									value={event.bookings_count}
-									max={event.capacity}
-								></progress>
-							{/if}
-						</div>
-					</button>
-				</div>
-			</div>
-		{/each}
 	{/each}
 </div>
+
+<!-- Classes -->
+{#each schedule[selectedDay] as event}
+	<div class="mx-2">
+		<div class="card card-border my-2 bg-base-100 shadow-md">
+			<button class="cursor-pointer" onclick={() => openClassModal(event)}>
+				<div class="card-body p-4">
+					<div class="flex flex-row items-center">
+						<div class="rounded-lg p-2 font-bold text-black text-left bg-blue-400">
+							<p>{formatTime(event.start)}</p>
+							<p class="text-xs text-left">
+								{getDuration(formatTime(event.start), formatTime(event.end))}
+							</p>
+						</div>
+						<div class="ml-4">
+							<h1 class="text-lg font-semibold">{event.title}</h1>
+							<p class="text-sm opacity-70">{event.coach}</p>
+						</div>
+					</div>
+
+					{#if event.capacity}
+						<progress
+							class="progress progress-primary mt-2 w-full"
+							value={event.bookings_count}
+							max={event.capacity}
+						></progress>
+					{/if}
+				</div>
+			</button>
+		</div>
+	</div>
+{/each}
 
 <!-- Class Information Modal -->
 {#if showClassModal && selectedClass}
