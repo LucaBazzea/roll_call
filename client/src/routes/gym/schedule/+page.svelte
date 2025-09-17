@@ -86,9 +86,7 @@
 	let addClassCoach = null;
 
 	function updateSelectedDay(day) {
-		console.log(day);
 		selectedDay = day;
-		console.log(selectedDay);
 	}
 
 	async function postAddClass() {
