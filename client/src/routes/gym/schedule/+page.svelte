@@ -186,13 +186,13 @@
 			<button class="cursor-pointer" onclick={() => openClassModal(event)}>
 				<div class="card-body p-4">
 					<div class="flex flex-row items-center">
-						<div class="rounded-lg p-2 font-bold text-black text-left bg-blue-400">
+						<div class="rounded-lg p-2 font-bold text-black bg-blue-400">
 							<p>{formatTime(event.start)}</p>
-							<p class="text-xs text-left">
+							<p class="text-xs">
 								{getDuration(formatTime(event.start), formatTime(event.end))}
 							</p>
 						</div>
-						<div class="ml-4">
+						<div class="text-left ml-4">
 							<h1 class="text-lg font-semibold">{event.title}</h1>
 							<p class="text-sm opacity-70">{event.coach}</p>
 						</div>
