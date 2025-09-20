@@ -213,29 +213,34 @@
 {#if showClassModal && selectedClass}
 	<div class="modal modal-open">
 		<div class="modal-box">
-			<h2 class="font-bold text-xl mb-2">{selectedClass.title}</h2>
-			<p class="mb-2">{selectedClass.description}</p>
-
-			<p>
-				<strong>Time:</strong>
-				{formatTime(selectedClass.start)} - {formatTime(selectedClass.end)}
-			</p>
-
-			<p><strong>Duration:</strong> {getDuration(selectedClass.start, selectedClass.end)}</p>
+			<div class="mb-2">
+				<h2 class="font-bold text-xl">{selectedClass.title}</h2>
+				<p>
+					{formatTime(selectedClass.start)} - {formatTime(selectedClass.end)}
+				</p>
+			</div>
 
 			{#if selectedClass.description}
-				<p><strong>Description:</strong> {selectedClass.description}</p>
+				<div class="flex flex-col">
+					<strong>Description:</strong>
+					<p>{selectedClass.description}</p>
+				</div>
 			{/if}
 
 			{#if selectedClass.capacity}
-				<p class="mt-2">
+				<div class="flex flex-col">
 					<strong>Bookings:</strong>
-					{selectedClass.bookings_count}/{selectedClass.capacity}
-				</p>
+					<p>
+						{selectedClass.bookings_count}/{selectedClass.capacity}
+					</p>
+				</div>
 			{/if}
 
 			{#if selectedClass.coach}
-				<p><strong>Coach:</strong> {selectedClass.coach}</p>
+				<div class="flex flex-col">
+					<strong>Coach:</strong>
+					<p>{selectedClass.coach}</p>
+				</div>
 			{/if}
 
 			<div class="modal-action">
