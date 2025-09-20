@@ -223,7 +223,9 @@
 
 			<p><strong>Duration:</strong> {getDuration(selectedClass.start, selectedClass.end)}</p>
 
-			<p><strong>Description:</strong> {selectedClass.description}</p>
+			{#if selectedClass.description}
+				<p><strong>Description:</strong> {selectedClass.description}</p>
+			{/if}
 
 			{#if selectedClass.capacity}
 				<p class="mt-2">
@@ -232,7 +234,9 @@
 				</p>
 			{/if}
 
-			<p><strong>Coach:</strong> {selectedClass.coach}</p>
+			{#if selectedClass.coach}
+				<p><strong>Coach:</strong> {selectedClass.coach}</p>
+			{/if}
 
 			<div class="modal-action">
 				<button class="btn" onclick={closeClassModal}>Close</button>
