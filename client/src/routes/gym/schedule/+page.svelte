@@ -248,7 +248,7 @@
 <!-- Add Class Button -->
 {#if isAdmin}
 	<div class="fixed bottom-0 w-full">
-		<button class="btn btn-secondary w-full rounded-none" onclick={() => addClassModal.showModal()}>
+		<button class="btn btn-neutral w-full rounded-none" onclick={() => addClassModal.showModal()}>
 			Add Class
 		</button>
 	</div>
