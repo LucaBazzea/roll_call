@@ -297,7 +297,7 @@
 				</div>
 
 				<!-- Start -->
-				<div class="form-control">
+				<div class="form-control flex flex-col">
 					<label class="label" for="add-class-time-start">Start *</label>
 					<input
 						id="add-class-time-start"
@@ -308,7 +308,7 @@
 				</div>
 
 				<!-- End -->
-				<div class="form-control">
+				<div class="form-control flex flex-col">
 					<label class="label" for="add-class-time-end">End *</label>
 					<input
 						id="add-class-time-end"
@@ -342,7 +342,7 @@
 			</div>
 
 			<div class="modal-action">
-				<button class="btn btn-primary" onclick={postAddClass}> Save Changes </button>
+				<button class="btn btn-primary" onclick={postAddClass}>Save</button>
 				<form method="dialog">
 					<button class="btn">Cancel</button>
 				</form>
