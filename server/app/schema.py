@@ -21,6 +21,7 @@ class GymClassSchema(Schema):
     gym_id: int
     class_id: int
 
+
 class ClassSchema(Schema):
     gym_id: int
     title: str

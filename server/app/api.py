@@ -188,6 +188,7 @@ def get_schedule(request, data: schema.GymSchema):
                 bookings_count += 1
 
         classe = {
+            "id": row["id"],
             "title": row["title"],
             "start": row["time_start"],
             "end": row["time_end"],
@@ -214,15 +215,18 @@ def class_book(request, data: schema.ClassBookingSchema):
         return Response({"message": "User / gym not found"}, status=404)
 
     try:
-        classe = models.Class.objects.get(id=data.class_id).values("id", "day", "capacity")
+        classe = models.Class.objects.filter(id=data.class_id).values("id", "day", "capacity").first()
     except models.Class.DoesNotExist:
         return Response({"message": "Class not found"}, status=402)
 
-    class_bookings_count = models.ClassBooking.objects.filter(classe__id=data.class_id).count()
+    class_bookings = models.ClassBooking.objects.filter(classe__id=data.class_id).values_list("gym_member__user_id", flat=True)
+
+    if user_id in class_bookings:
+        return Response({"message": f"You have already booked this class"}, status=403)
 
     # Check if class is full
     if classe["capacity"] is not None:
-        if classe["capacity"] <= class_bookings_count:
+        if classe["capacity"] <= len(class_bookings):
             return Response({"message": "Class full"}, status=403)
 
     # Classes don't have dates, but class bookings do
@@ -237,7 +241,7 @@ def class_book(request, data: schema.ClassBookingSchema):
     )
     new_booking.save()
 
-    return Response({"message": "Class booking created successfully"}, status=200)
+    return Response({"message": f"Class booking created successfully"}, status=200)
 
 
 @api.post("/admin/class/get-bookings/")
