@@ -89,6 +89,26 @@
 		selectedDay = day;
 	}
 
+	async function bookClass() {
+		try {
+			const response = await fetch(`${baseURL}/app/class/book/`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+				body: JSON.stringify({ gym_id: gymID, class_id: selectedClass['id'] }),
+				credentials: 'include'
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			return await response.json();
+		} catch (error) {
+			console.error('Failed to book class:', error);
+			return null;
+		}
+	}
+
 	async function postAddClass() {
 		addClassFormErrors = {};
 		addClassErrorFlag = false;
@@ -242,6 +262,10 @@
 					<p>{selectedClass.coach}</p>
 				</div>
 			{/if}
+
+			<div class="modal-action">
+				<button class="btn btn-primary" onclick={bookClass}>Book</button>
+			</div>
 
 			<div class="modal-action">
 				<button class="btn" onclick={closeClassModal}>Close</button>
