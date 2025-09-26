@@ -263,12 +263,16 @@
 				</div>
 			{/if}
 
-			<div class="modal-action">
-				<button class="btn btn-primary" onclick={bookClass}>Book</button>
-			</div>
+			<div class="flex flex-row justify-end">
+				<div class="modal-action">
+					<button class="btn btn-sm btn-primary" onclick={bookClass}>Book</button>
+				</div>
 
-			<div class="modal-action">
-				<button class="btn" onclick={closeClassModal}>Close</button>
+				<div class="w-2"></div>
+
+				<div class="modal-action">
+					<button class="btn btn-sm" onclick={closeClassModal}>Close</button>
+				</div>
 			</div>
 		</div>
 	</div>
