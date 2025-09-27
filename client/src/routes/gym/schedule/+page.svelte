@@ -45,7 +45,7 @@
 		}
 	}
 
-	let schedule = {
+	$: schedule = {
 		mon: [],
 		tue: [],
 		wed: [],
@@ -59,8 +59,19 @@
 	let dayToday = 'mon';
 	let selectedDay = dayToday;
 
+	let messageToast = null;
+
 	let selectedClass = null;
 	let showClassModal = false;
+	let classModalWarning = null;
+	let classModalError = null;
+
+	function showMessageToast(message) {
+		messageToast = message;
+		setTimeout(() => {
+			messageToast = null;
+		}, 5000);
+	}
 
 	function openClassModal(event) {
 		selectedClass = event;
@@ -70,6 +81,17 @@
 	function closeClassModal() {
 		selectedClass = null;
 		showClassModal = false;
+
+		classModalWarning = null;
+		classModalError = null;
+	}
+
+	function showClassModalAlert(type, message) {
+		if (type === 'warning') {
+			classModalWarning = message;
+		} else if (type === 'error') {
+			classModalError = message;
+		}
 	}
 
 	let addClassModal;
@@ -97,6 +119,10 @@
 				body: JSON.stringify({ gym_id: gymID, class_id: selectedClass['id'] }),
 				credentials: 'include'
 			});
+			if (response.status === 200) {
+				closeClassModal();
+				showMessageToast('Class booked, train hard!');
+			}
 
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`);
@@ -174,6 +200,14 @@
 	});
 </script>
 
+<div class="toast toast-center w-full mb-8">
+	{#if messageToast}
+		<div class="alert alert-success">
+			<span>{messageToast}</span>
+		</div>
+	{/if}
+</div>
+
 <!-- Days of the week tabs -->
 <div class="tabs tabs-box w-full tabs-sm">
 	{#each Object.keys(schedule) as day}
@@ -233,6 +267,16 @@
 {#if showClassModal && selectedClass}
 	<div class="modal modal-open">
 		<div class="modal-box">
+			{#if classModalWarning}
+				<div role="alert" class="alert alert-warning alert-soft">
+					<span>{classModalWarning}</span>
+				</div>
+			{/if}
+			{#if classModalError}
+				<div role="alert" class="alert alert-error alert-soft">
+					<span>{classModalError}</span>
+				</div>
+			{/if}
 			<div class="mb-2">
 				<h2 class="font-bold text-xl">{selectedClass.title}</h2>
 				<p>
