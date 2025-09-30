@@ -170,8 +170,26 @@
 		}
 	}
 
-	function deleteClass() {
-		console.log('Class Deleted');
+	async function deleteClass(class_id) {
+		try {
+			const response = await fetch(`${baseURL}/app/admin/class/delete/`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+				body: class_id,
+				credentials: 'include'
+			});
+
+			if (response.status === 200) {
+				closeClassModal();
+				showMessageToast('Class deleted');
+			}
+
+			if (!response.ok) {
+				showClassModalAlert('warning', 'Failed to delete class');
+			}
+		} catch (error) {
+			showClassModalAlert('warning', 'Failed to delete class');
+		}
 	}
 
 	function formatTime(time) {
@@ -308,6 +326,12 @@
 			{/if}
 
 			<div class="flex flex-row justify-end">
+				<div class="modal-action">
+					<button class="btn btn-sm btn-primary" onclick={deleteClass(selectedClass.id)}
+						>Delete</button
+					>
+				</div>
+
 				<div class="modal-action">
 					<button class="btn btn-sm btn-primary" onclick={bookClass}>Book</button>
 				</div>
