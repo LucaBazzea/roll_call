@@ -112,8 +112,8 @@ def class_create(request, data: schema.ClassSchema):
     try:
         gym_member = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).role
 
-        # if gym_member["role"] is None:
-        #    return Response({"message": "Invalid permissions"}, status=403)
+        if gym_member["role"] is None:
+            return Response({"message": "Invalid permissions"}, status=403)
 
     except models.GymMember.DoesNotExist:
         return Response({"message": "User / gym not found"}, status=402)
@@ -135,6 +135,33 @@ def class_create(request, data: schema.ClassSchema):
         return Response({"Error": error}, status=500)
 
     return Response({"message": "Class created successfully"}, status=200)
+
+
+@api.post("/admin/class/delete/")
+def class_create(request, class_id: int):
+    # user_id = request.session.get("user_id")
+    user_id = 1
+
+    try:
+        gym_member = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).role
+
+        if gym_member["role"] is None:
+            return Response({"message": "Invalid permissions"}, status=403)
+
+    except models.GymMember.DoesNotExist:
+        return Response({"message": "User / gym not found"}, status=402)
+
+    try:
+        classe = models.Class.objects.get(id=class_id)
+        classe.delete()
+
+    except models.Class.DoesNotExist:
+        return Response({"message": "Class not found"}, status=404)
+
+    except Exception as error:
+        return Response({"Error": error}, status=500)
+
+    return Response({"message": "Class deleted successfully"}, status=200)
 
 
 @api.post("/schedule/")
