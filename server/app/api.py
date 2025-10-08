@@ -138,21 +138,21 @@ def class_create(request, data: schema.ClassSchema):
 
 
 @api.post("/admin/class/delete/")
-def class_create(request, class_id: int):
+def class_create(request, data: schema.GymClassSchema):
     # user_id = request.session.get("user_id")
     user_id = 1
 
     try:
-        gym_member = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).role
+        gym_member_role = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).role
 
-        if gym_member["role"] is None:
+        if gym_member_role is None:
             return Response({"message": "Invalid permissions"}, status=403)
 
     except models.GymMember.DoesNotExist:
         return Response({"message": "User / gym not found"}, status=402)
 
     try:
-        classe = models.Class.objects.get(id=class_id)
+        classe = models.Class.objects.get(id=data.class_id)
         classe.delete()
 
     except models.Class.DoesNotExist:

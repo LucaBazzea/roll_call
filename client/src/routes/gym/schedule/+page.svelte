@@ -170,14 +170,28 @@
 		}
 	}
 
+	// Delete Class //
+	let deleteClassModal = false;
+
+	function showDeleteClassModal() {
+		showClassModal = false;
+		deleteClassModal = true;
+	}
+
+	function closeDeleteClassModal() {
+		deleteClassModal = false;
+	}
+
 	async function deleteClass(class_id) {
 		try {
 			const response = await fetch(`${baseURL}/app/admin/class/delete/`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
-				body: class_id,
+				body: JSON.stringify({ gym_id: gymID, class_id: class_id }),
 				credentials: 'include'
 			});
+
+			closeDeleteClassModal();
 
 			if (response.status === 200) {
 				closeClassModal();
@@ -225,6 +239,22 @@
 		</div>
 	{/if}
 </div>
+
+{#if deleteClassModal === true}
+	<div class="modal modal-open">
+		<div class="modal-box">
+			<h3 class="text-lg font-bold">Delete class "{selectedClass.title}"?</h3>
+			<p class="py-4">This action is irreversible</p>
+			<div class="modal-action">
+				<form method="dialog">
+					<button class="btn btn-lg">Cancel</button>
+				</form>
+				<button class="btn btn-danger btn-lg" onclick={deleteClass(selectedClass.id)}>Delete</button
+				>
+			</div>
+		</div>
+	</div>
+{/if}
 
 <!-- Days of the week tabs -->
 <div class="tabs tabs-box w-full tabs-sm">
@@ -327,9 +357,7 @@
 
 			<div class="flex flex-row justify-end">
 				<div class="modal-action">
-					<button class="btn btn-sm btn-primary" onclick={deleteClass(selectedClass.id)}
-						>Delete</button
-					>
+					<button class="btn btn-sm btn-primary" onclick={showDeleteClassModal}>Delete</button>
 				</div>
 
 				<div class="modal-action">
