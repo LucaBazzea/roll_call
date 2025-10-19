@@ -1,5 +1,5 @@
-from logging import getHandlerByName
 from django.db import models
+from zoneinfo import available_timezones
 
 
 class User(models.Model):
@@ -11,6 +11,10 @@ class User(models.Model):
 class Gym(models.Model):
     name = models.CharField(max_length=32)
     owner = models.ForeignKey(User, on_delete=models.PROTECT)
+    timezone = models.CharField(
+        max_length=50,
+        choices=[(tz, tz) for tz in sorted(available_timezones())],
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
 
