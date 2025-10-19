@@ -174,15 +174,13 @@ def get_schedule(request, data: schema.GymSchema):
     except models.GymMember.DoesNotExist:
         return Response({"message": "User / gym not found"}, status=404)
 
-    schedule = {
-        "mon": [],
-        "tue": [],
-        "wed": [],
-        "thu": [],
-        "fri": [],
-        "sat": [],
-        "sun": []
-    }
+    # Structure the week's schedule so that today is always the first day of the week
+    local_timezone = models.Gym.objects.get(id=data.gym_id).timezone
+    next_7_days = services.get_next_7_days(local_timezone)
+
+    schedule = {}
+    for day_of_week, date in next_7_days.keys:
+        schedule[day_of_week] = {"date": date, "classes": []}
 
     classes = models.Class.objects.filter(
         gym_id=data.gym_id

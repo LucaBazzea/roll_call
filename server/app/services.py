@@ -1,5 +1,5 @@
-from datetime import date, timedelta
-
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
 
 def get_week(date: date) -> dict:
     # Round down to the nearest Monday
@@ -15,3 +15,17 @@ def get_week(date: date) -> dict:
 
     return week_current
 
+def get_next_7_days(timezone: str) -> dict: # e.g. "Africa/Windhoek"
+    tz = ZoneInfo(timezone)
+    now_local = datetime.now(tz)
+
+    days = {}
+    for item in range(7):
+        day = now_local + timedelta(days=item)
+
+        day_name = day.strftime("%A")
+        date = day.date()
+
+        days[day_name] = date
+
+    return days
