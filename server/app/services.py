@@ -23,7 +23,7 @@ def get_next_7_days(timezone: str) -> dict: # e.g. "Africa/Windhoek"
     for item in range(7):
         day = now_local + timedelta(days=item)
 
-        day_name = day.strftime("%A")
+        day_name = day.strftime("%A")[:3].lower()
         date = day.date()
 
         days[day_name] = date

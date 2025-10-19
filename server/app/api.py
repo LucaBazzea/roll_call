@@ -179,7 +179,7 @@ def get_schedule(request, data: schema.GymSchema):
     next_7_days = services.get_next_7_days(local_timezone)
 
     schedule = {}
-    for day_of_week, date in next_7_days.keys:
+    for day_of_week, date in next_7_days.items():
         schedule[day_of_week] = {"date": date, "classes": []}
 
     classes = models.Class.objects.filter(
@@ -199,31 +199,20 @@ def get_schedule(request, data: schema.GymSchema):
         "coach"
     )
 
-    bookings = models.ClassBooking.objects.filter(
-        classe_id__in=classes.values_list("id", flat=True)
-    ).values_list(
-        "classe_id",
-        flat=True
-    )
-
-    for row in classes:
-        bookings_count = 0
-        for class_id in bookings:
-            if class_id == row["id"]:
-                bookings_count += 1
-
-        classe = {
-            "id": row["id"],
-            "title": row["title"],
-            "start": row["time_start"],
-            "end": row["time_end"],
-            "capacity": row["capacity"],
-            "bookings_count": bookings_count,
-            "colour": row["colour_hex"],
-            "description": row["description"],
-            "coach": row["coach"]
+    for classe in classes:
+        class_data = {
+            "id": classe["id"],
+            "title": classe["title"],
+            "start": classe["time_start"],
+            "end": classe["time_end"],
+            "capacity": classe["capacity"],
+            "bookings_count": 0, # WIP
+            "colour": classe["colour_hex"],
+            "description": classe["description"],
+            "coach": classe["coach"]
         }
-        schedule[row["day"]].append(classe)
+        day = classe["day"]
+        schedule[day]["classes"].append(class_data)
 
     return Response(schedule, status=200)
 
