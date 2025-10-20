@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.db.models import Q
 from django.core.cache import cache
@@ -110,9 +110,9 @@ def class_create(request, data: schema.ClassSchema):
     user_id = 1
 
     try:
-        gym_member = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).role
+        gym_member_role = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).role
 
-        if gym_member["role"] is None:
+        if gym_member_role is None:
             return Response({"message": "Invalid permissions"}, status=403)
 
     except models.GymMember.DoesNotExist:
@@ -221,6 +221,7 @@ def get_schedule(request, data: schema.GymSchema):
 def class_book(request, data: schema.ClassBookingSchema):
     # user_id = request.session.get("user_id")
     user_id = 1
+    gym_id = 1
 
     # Check if user is part of the gym that the class belongs to
     try:
@@ -244,9 +245,10 @@ def class_book(request, data: schema.ClassBookingSchema):
             return Response({"message": "Class full"}, status=403)
 
     # Classes don't have dates, but class bookings do
-    date_today = datetime.now().date()
-    week_current = services.get_week(date_today)
-    class_date = week_current[classe["day"]]
+    timezone = models.Gym.objects.get(id=gym_id).timezone
+
+    next_7_days = services.get_next_7_days(timezone)
+    class_date = next_7_days[classe["day"]]
 
     new_booking = models.ClassBooking(
         classe_id=data.class_id,
