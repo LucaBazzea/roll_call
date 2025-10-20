@@ -138,7 +138,7 @@ def class_create(request, data: schema.ClassSchema):
 
 
 @api.post("/admin/class/delete/")
-def class_create(request, data: schema.GymClassSchema):
+def class_delete(request, data: schema.GymClassSchema):
     # user_id = request.session.get("user_id")
     user_id = 1
 
