@@ -46,13 +46,13 @@
 	}
 
 	$: schedule = {
-		mon: [],
-		tue: [],
-		wed: [],
-		thu: [],
-		fri: [],
-		sat: [],
-		sun: []
+		mon: { date: null, classes: [] },
+		tue: { date: null, classes: [] },
+		wed: { date: null, classes: [] },
+		thu: { date: null, classes: [] },
+		fri: { date: null, classes: [] },
+		sat: { date: null, classes: [] },
+		sun: { date: null, classes: [] }
 	};
 
 	let isAdmin = true;
@@ -280,7 +280,7 @@
 </div>
 
 <!-- Classes -->
-{#each schedule[selectedDay] as event}
+{#each schedule[selectedDay]?.classes as event}
 	<div class="mx-2">
 		<div class="card card-border my-2 bg-base-100 shadow-md">
 			<button class="cursor-pointer" onclick={() => openClassModal(event)}>
