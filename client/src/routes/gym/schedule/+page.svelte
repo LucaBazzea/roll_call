@@ -46,13 +46,13 @@
 	}
 
 	$: schedule = {
-		mon: { date: null, classes: [] },
-		tue: { date: null, classes: [] },
-		wed: { date: null, classes: [] },
-		thu: { date: null, classes: [] },
-		fri: { date: null, classes: [] },
-		sat: { date: null, classes: [] },
-		sun: { date: null, classes: [] }
+		mon: { date: null, classes: null },
+		tue: { date: null, classes: null },
+		wed: { date: null, classes: null },
+		thu: { date: null, classes: null },
+		fri: { date: null, classes: null },
+		sat: { date: null, classes: null },
+		sun: { date: null, classes: null }
 	};
 
 	let isAdmin = true;
