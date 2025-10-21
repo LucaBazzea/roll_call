@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.core.cache import cache
 
 from ninja import NinjaAPI
@@ -199,6 +199,11 @@ def get_schedule(request, data: schema.GymSchema):
         "coach"
     )
 
+    # Class bookings count
+    class_ids = [classe["id"] for classe in classes]
+    bookings_count = models.ClassBooking.objects.filter(classe__in=class_ids).values("classe_id").annotate(count=Count("id"))
+    bookings_count_map = {booking["classe_id"]: booking["count"] for booking in bookings_count}
+
     for classe in classes:
         class_data = {
             "id": classe["id"],
@@ -206,7 +211,7 @@ def get_schedule(request, data: schema.GymSchema):
             "start": classe["time_start"],
             "end": classe["time_end"],
             "capacity": classe["capacity"],
-            "bookings_count": 0, # WIP
+            "bookings_count": bookings_count_map.get(classe["id"], 0),
             "colour": classe["colour_hex"],
             "description": classe["description"],
             "coach": classe["coach"]
