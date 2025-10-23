@@ -57,7 +57,7 @@
 
 	let isAdmin = true;
 	let dayToday = 'mon';
-	let selectedDay = dayToday;
+	$: selectedDay = dayToday;
 
 	let messageToast = null;
 
@@ -224,6 +224,9 @@
 		} catch (error) {
 			console.error('Failed to fetch schedule:', error);
 		}
+
+		// The day today will be the first day in the schedule dict
+		dayToday = Object.keys(schedule)[0];
 
 		csrftoken = document.cookie
 			.split('; ')
