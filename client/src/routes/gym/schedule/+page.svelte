@@ -171,7 +171,7 @@
 	}
 
 	// Delete Class //
-	let deleteClassModal = false;
+	$: deleteClassModal = false;
 
 	function showDeleteClassModal() {
 		showClassModal = false;
@@ -180,6 +180,11 @@
 
 	function closeDeleteClassModal() {
 		deleteClassModal = false;
+	}
+
+	function cancelDeleteClassModal() {
+		deleteClassModal = false;
+		openClassModal(selectedClass);
 	}
 
 	async function deleteClass(class_id) {
@@ -248,12 +253,15 @@
 		<div class="modal-box">
 			<h3 class="text-lg font-bold">Delete class "{selectedClass.title}"?</h3>
 			<p class="py-4">This action is irreversible</p>
-			<div class="modal-action">
-				<form method="dialog">
-					<button class="btn btn-lg">Cancel</button>
-				</form>
-				<button class="btn btn-danger btn-lg" onclick={deleteClass(selectedClass.id)}>Delete</button
-				>
+			<div class="flex flex-row space-x-2">
+				<div class="modal-action w-full">
+					<button class="btn btn-md w-full" onclick={cancelDeleteClassModal}>Cancel</button>
+				</div>
+				<div class="modal-action w-full">
+					<button class="btn btn-secondary btn-md w-full" onclick={deleteClass(selectedClass.id)}
+						>Delete</button
+					>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -328,8 +336,25 @@
 					<span>{classModalError}</span>
 				</div>
 			{/if}
-			<div class="mb-2">
+			<div class="flex flex-row mb-2 justify-between">
 				<h2 class="font-bold text-xl">{selectedClass.title}</h2>
+
+				<details class="dropdown dropdown-bottom dropdown-end">
+					<summary class="btn btn-xs m-1">Options</summary>
+					<ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+						{#if isAdmin === true}
+							<li>
+								<button onclick={showDeleteClassModal}> Delete </button>
+							</li>
+							<li>
+								<button> Edit </button>
+							</li>
+						{/if}
+					</ul>
+				</details>
+			</div>
+
+			<div class="flex flex-row">
 				<p>
 					{formatTime(selectedClass.start)} - {formatTime(selectedClass.end)}
 				</p>
@@ -357,20 +382,13 @@
 					<p>{selectedClass.coach}</p>
 				</div>
 			{/if}
-
-			<div class="flex flex-row justify-end">
-				<div class="modal-action">
-					<button class="btn btn-sm btn-primary" onclick={showDeleteClassModal}>Delete</button>
+			<div class="flex flex-row items-center space-x-2">
+				<div class="modal-action w-full">
+					<button class="btn btn-md btn-neutral w-full" onclick={closeClassModal}> Close </button>
 				</div>
 
-				<div class="modal-action">
-					<button class="btn btn-sm btn-primary" onclick={bookClass}>Book</button>
-				</div>
-
-				<div class="w-2"></div>
-
-				<div class="modal-action">
-					<button class="btn btn-sm" onclick={closeClassModal}>Close</button>
+				<div class="modal-action w-full">
+					<button class="btn btn-md btn-primary w-full" onclick={bookClass}>Book</button>
 				</div>
 			</div>
 		</div>
