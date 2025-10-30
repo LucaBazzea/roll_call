@@ -357,37 +357,19 @@
 			<div class="divider my-0"></div>
 
 			<div class="space-y-2">
-				<div class="flex flex-row justify-between">
-					<div class="flex flex-row space-x-4">
-						<div class="flex flex-col">
-							<h4 class="font-bold text-md">Start</h4>
-							<p class="text-xl/6">
-								{formatTime(selectedClass.start)}
-							</p>
-						</div>
-						<div class="flex flex-col">
-							<h4 class="font-bold text-md">End</h4>
-							<p class="text-xl/6">
-								{formatTime(selectedClass.end)}
-							</p>
-						</div>
+				<div class="flex flex-row space-x-4">
+					<div class="flex flex-col">
+						<h4 class="font-bold text-md">Start</h4>
+						<p class="text-xl/6">
+							{formatTime(selectedClass.start)}
+						</p>
 					</div>
-
-					{#if selectedClass.capacity}
-						{#if selectedClass.bookings_count === selectedClass.capacity}
-							<div class="badge badge-sm badge-secondary mt-2">
-								<p>
-									{selectedClass.bookings_count}/{selectedClass.capacity}
-								</p>
-							</div>
-						{:else}
-							<div class="badge badge-sm badge-info mt-2">
-								<p>
-									{selectedClass.bookings_count}/{selectedClass.capacity}
-								</p>
-							</div>
-						{/if}
-					{/if}
+					<div class="flex flex-col">
+						<h4 class="font-bold text-md">End</h4>
+						<p class="text-xl/6">
+							{formatTime(selectedClass.end)}
+						</p>
+					</div>
 				</div>
 
 				{#if selectedClass.description}
@@ -413,7 +395,19 @@
 				</div>
 
 				<div class="modal-action w-full">
-					<button class="btn btn-md btn-primary w-full" onclick={bookClass}>Book</button>
+					{#if selectedClass.capacity}
+						{#if selectedClass.bookings_count === selectedClass.capacity}
+							<button class="btn btn-md btn-secondary w-full" onclick={bookClass}
+								>Book {selectedClass.bookings_count}/{selectedClass.capacity}</button
+							>
+						{:else}
+							<button class="btn btn-md btn-primary w-full" onclick={bookClass}
+								>Book {selectedClass.bookings_count}/{selectedClass.capacity}</button
+							>
+						{/if}
+					{:else}
+						<button class="btn btn-md btn-primary w-full" onclick={bookClass}>Book</button>
+					{/if}
 				</div>
 			</div>
 		</div>
