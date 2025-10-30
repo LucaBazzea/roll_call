@@ -373,8 +373,10 @@
 
 			{#if selectedClass.description}
 				<div class="flex flex-col">
-					<strong>Description:</strong>
-					<p>{selectedClass.description}</p>
+					<h4 class="font-bold text-lg">Description</h4>
+					<div class="card bg-neutral text-neutral-content rounded-field p-2 w-full">
+						<p>{selectedClass.description}</p>
+					</div>
 				</div>
 			{/if}
 
