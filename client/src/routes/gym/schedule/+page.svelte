@@ -336,11 +336,11 @@
 					<span>{classModalError}</span>
 				</div>
 			{/if}
-			<div class="flex flex-row mb-2 justify-between">
+			<div class="flex flex-row justify-between">
 				<h2 class="font-bold text-xl">{selectedClass.title}</h2>
 
 				<details class="dropdown dropdown-bottom dropdown-end">
-					<summary class="btn btn-xs m-1">Options</summary>
+					<summary class="btn btn-xs">Options</summary>
 					<ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
 						{#if isAdmin === true}
 							<li>
@@ -353,6 +353,8 @@
 					</ul>
 				</details>
 			</div>
+
+			<div class="divider my-0"></div>
 
 			<div class="flex flex-row">
 				<p>
