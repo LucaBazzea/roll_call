@@ -356,45 +356,57 @@
 
 			<div class="divider my-0"></div>
 
-			<div class="flex flex-row space-x-4">
-				<div class="flex flex-col">
-					<h4 class="font-bold text-lg">Start</h4>
-					<p class="text-xl">
-						{formatTime(selectedClass.start)}
-					</p>
+			<div class="space-y-2">
+				<div class="flex flex-row justify-between">
+					<div class="flex flex-row space-x-4">
+						<div class="flex flex-col">
+							<h4 class="font-bold text-md">Start</h4>
+							<p class="text-xl/6">
+								{formatTime(selectedClass.start)}
+							</p>
+						</div>
+						<div class="flex flex-col">
+							<h4 class="font-bold text-md">End</h4>
+							<p class="text-xl/6">
+								{formatTime(selectedClass.end)}
+							</p>
+						</div>
+					</div>
+
+					{#if selectedClass.capacity}
+						{#if selectedClass.bookings_count === selectedClass.capacity}
+							<div class="badge badge-sm badge-secondary mt-2">
+								<p>
+									{selectedClass.bookings_count}/{selectedClass.capacity}
+								</p>
+							</div>
+						{:else}
+							<div class="badge badge-sm badge-info mt-2">
+								<p>
+									{selectedClass.bookings_count}/{selectedClass.capacity}
+								</p>
+							</div>
+						{/if}
+					{/if}
 				</div>
-				<div class="flex flex-col">
-					<h4 class="font-bold text-lg">End</h4>
-					<p class="text-xl">
-						{formatTime(selectedClass.end)}
-					</p>
-				</div>
+
+				{#if selectedClass.description}
+					<div class="flex flex-col">
+						<h4 class="font-bold text-md mb-1">Description</h4>
+						<div class="card bg-neutral text-neutral-content rounded-field p-2 w-full">
+							<p class="text-sm">{selectedClass.description}</p>
+						</div>
+					</div>
+				{/if}
+
+				{#if selectedClass.coach}
+					<div class="flex flex-col">
+						<h4 class="font-bold text-md">Coach</h4>
+						<p class="text-xl/6">{selectedClass.coach}</p>
+					</div>
+				{/if}
 			</div>
 
-			{#if selectedClass.description}
-				<div class="flex flex-col">
-					<h4 class="font-bold text-lg">Description</h4>
-					<div class="card bg-neutral text-neutral-content rounded-field p-2 w-full">
-						<p>{selectedClass.description}</p>
-					</div>
-				</div>
-			{/if}
-
-			{#if selectedClass.capacity}
-				<div class="flex flex-col">
-					<strong>Bookings:</strong>
-					<p>
-						{selectedClass.bookings_count}/{selectedClass.capacity}
-					</p>
-				</div>
-			{/if}
-
-			{#if selectedClass.coach}
-				<div class="flex flex-col">
-					<strong>Coach:</strong>
-					<p>{selectedClass.coach}</p>
-				</div>
-			{/if}
 			<div class="flex flex-row items-center space-x-2">
 				<div class="modal-action w-full">
 					<button class="btn btn-md btn-neutral w-full" onclick={closeClassModal}> Close </button>
