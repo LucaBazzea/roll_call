@@ -297,7 +297,7 @@
 			<button class="cursor-pointer" onclick={() => openClassModal(event)}>
 				<div class="card-body p-4">
 					<div class="flex flex-row items-center">
-						<div class="rounded-lg p-2 font-bold text-black bg-blue-400">
+						<div class="rounded-lg p-2 font-bold text-black bg-primary">
 							<p>{formatTime(event.start)}</p>
 							<p class="text-xs">
 								{getDuration(formatTime(event.start), formatTime(event.end))}
@@ -310,10 +310,7 @@
 					</div>
 
 					{#if event.capacity}
-						<progress
-							class="progress progress-primary mt-2 w-full"
-							value={event.bookings_count}
-							max={event.capacity}
+						<progress class="progress mt-2 w-full" value={event.bookings_count} max={event.capacity}
 						></progress>
 					{/if}
 				</div>
