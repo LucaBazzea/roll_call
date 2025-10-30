@@ -356,10 +356,19 @@
 
 			<div class="divider my-0"></div>
 
-			<div class="flex flex-row">
-				<p>
-					{formatTime(selectedClass.start)} - {formatTime(selectedClass.end)}
-				</p>
+			<div class="flex flex-row space-x-4">
+				<div class="flex flex-col">
+					<h4 class="font-bold text-lg">Start</h4>
+					<p class="text-xl">
+						{formatTime(selectedClass.start)}
+					</p>
+				</div>
+				<div class="flex flex-col">
+					<h4 class="font-bold text-lg">End</h4>
+					<p class="text-xl">
+						{formatTime(selectedClass.end)}
+					</p>
+				</div>
 			</div>
 
 			{#if selectedClass.description}
