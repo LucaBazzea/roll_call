@@ -294,33 +294,40 @@
 </div>
 
 <!-- Classes -->
-{#each schedule[selectedDay]?.classes as event}
-	<div class="mx-2">
-		<div class="card card-border my-2 bg-base-100 shadow-md">
-			<button class="cursor-pointer" onclick={() => openClassModal(event)}>
-				<div class="card-body p-4">
-					<div class="flex flex-row items-center">
-						<div class="rounded-lg p-2 font-bold text-black bg-primary">
-							<p>{formatTime(event.start)}</p>
-							<p class="text-xs">
-								{getDuration(formatTime(event.start), formatTime(event.end))}
-							</p>
+{#if schedule[selectedDay]?.classes && schedule[selectedDay].classes.length > 0}
+	{#each schedule[selectedDay]?.classes as event}
+		<div class="mx-2">
+			<div class="card card-border my-2 bg-base-100 shadow-md">
+				<button class="cursor-pointer" onclick={() => openClassModal(event)}>
+					<div class="card-body p-4">
+						<div class="flex flex-row items-center">
+							<div class="rounded-lg p-2 font-bold text-black bg-primary">
+								<p>{formatTime(event.start)}</p>
+								<p class="text-xs">
+									{getDuration(formatTime(event.start), formatTime(event.end))}
+								</p>
+							</div>
+							<div class="text-left ml-4">
+								<h1 class="text-lg font-semibold">{event.title}</h1>
+								<p class="text-sm opacity-70">{event.coach}</p>
+							</div>
 						</div>
-						<div class="text-left ml-4">
-							<h1 class="text-lg font-semibold">{event.title}</h1>
-							<p class="text-sm opacity-70">{event.coach}</p>
-						</div>
-					</div>
 
-					{#if event.capacity}
-						<progress class="progress mt-2 w-full" value={event.bookings_count} max={event.capacity}
-						></progress>
-					{/if}
-				</div>
-			</button>
+						{#if event.capacity}
+							<progress
+								class="progress mt-2 w-full"
+								value={event.bookings_count}
+								max={event.capacity}
+							></progress>
+						{/if}
+					</div>
+				</button>
+			</div>
 		</div>
-	</div>
-{/each}
+	{/each}
+{:else}
+	<div class="mx-2 my-4 text-center text-gray-500">No classes scheduled</div>
+{/if}
 
 <!-- Class Information Modal -->
 {#if showClassModal && selectedClass}
