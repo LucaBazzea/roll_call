@@ -121,6 +121,7 @@
 			});
 			if (response.status === 200) {
 				closeClassModal();
+				schedule = await getSchedule();
 				showMessageToast('Class booked, train hard!');
 			}
 
@@ -164,6 +165,7 @@
 
 			console.log('Class created');
 			addClassModal.close();
+			schedule = await getSchedule();
 		} catch (error) {
 			console.error('Failed to create class');
 			addClassErrorFlag = true;
@@ -200,6 +202,7 @@
 
 			if (response.status === 200) {
 				closeClassModal();
+				schedule = await getSchedule();
 				showMessageToast('Class deleted');
 			}
 
