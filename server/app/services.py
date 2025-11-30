@@ -1,5 +1,13 @@
+import secrets
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
+
+from django.conf import settings
+
+from mailersend import MailerSendClient, EmailBuilder
+
+
+
 
 def get_week(date: date) -> dict:
     # Round down to the nearest Monday
@@ -29,3 +37,24 @@ def get_next_7_days(timezone: str) -> dict: # e.g. "Africa/Windhoek"
         days[day_name] = date
 
     return days
+
+def generate_pin():
+    return secrets.randbelow(900000) + 100000
+
+def send_otp_email(email, pin):
+    ms = MailerSendClient()
+
+    email = (
+        EmailBuilder()
+            .from_email("no-reply@rollcall.cc", "RollCall Team")
+            .to_many([{"email": "recipient@domain.com", "name": "Recipient"}])
+            .template("o65qngkm50jlwr12")
+            .personalize_many([{
+                "email": "recipient@domain.com",
+                "data": {},
+                "otp": pin
+            }])
+            .build()
+    )
+
+    response = ms.emails.send(email)

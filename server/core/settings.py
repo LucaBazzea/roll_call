@@ -27,6 +27,8 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
+MAILERSEND_TOKEN = os.getenv("MAILERSEND_TOKEN")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
