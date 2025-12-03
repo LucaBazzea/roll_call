@@ -7,8 +7,6 @@ from django.conf import settings
 from mailersend import MailerSendClient, EmailBuilder
 
 
-
-
 def get_week(date: date) -> dict:
     # Round down to the nearest Monday
     days_to_subtract = date.weekday()
@@ -39,22 +37,22 @@ def get_next_7_days(timezone: str) -> dict: # e.g. "Africa/Windhoek"
     return days
 
 def generate_pin():
-    return secrets.randbelow(900000) + 100000
+    return str(secrets.randbelow(900000) + 100000)
 
-def send_otp_email(email, pin):
-    ms = MailerSendClient()
+def send_otp_email(recipient, pin):
+    mailer = MailerSendClient(api_key=settings.MAILERSEND_TOKEN)
 
     email = (
         EmailBuilder()
             .from_email("no-reply@rollcall.cc", "RollCall Team")
-            .to_many([{"email": "recipient@domain.com", "name": "Recipient"}])
+            .to_many([{"email": recipient, "name": "Recipient"}])
             .template("o65qngkm50jlwr12")
             .personalize_many([{
-                "email": "recipient@domain.com",
-                "data": {},
-                "otp": pin
+                "email": recipient,
+                "data": {"otp": pin}
             }])
+            .subject("RollCall OTP")
             .build()
     )
 
-    response = ms.emails.send(email)
+    mailer.emails.send(email)

@@ -8,8 +8,47 @@ from ninja.responses import Response
 
 from app import models, schema, services
 
+
 api = NinjaAPI()
 
+@api.post("/login/otp/send/")
+def login_otp_send(request, data: schema.EmailSchema):
+    print("login_otp_send")
+    print(data)
+
+    pin = services.generate_pin()
+
+    cache.set(f"otp:{data.email}", pin, timeout=1800)
+
+    try:
+        services.send_otp_email(data.email, pin)
+        return Response({"success": "OTP Sent"}, status=200)
+    except Exception as error:
+        print(error)
+        return Response({"error": "Failed to send OTP"}, status=501)
+
+@api.post("/login/otp/validate/")
+def login_otp_validate(request, data: schema.EmailPinSchema):
+    pin_cached = cache.get(f"otp:{data.email}")
+
+    if pin_cached is None:
+        return Response({"error": "OTP Expired"}, status=400)
+
+    if pin_cached != data.pin:
+        return Response({"error": "Invalid OTP"}, status=400)
+
+    try:
+        user = models.User.objects.get(email=data.email)
+
+    except models.User.DoesNotExist:
+        user = models.User(
+            email=data.email
+        )
+        user.save()
+
+    request.session["user_id"] = user.id
+
+    return Response({"message": "User created successfully"}, status=200)
 
 @api.get("/user/")
 def user(request, data):

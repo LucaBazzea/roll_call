@@ -3,6 +3,15 @@ import datetime
 from ninja import Schema
 
 
+class EmailSchema(Schema):
+    email: str
+
+
+class EmailPinSchema(Schema):
+    email: str
+    pin: int
+
+
 class GymSchema(Schema):
     gym_id: int
 
