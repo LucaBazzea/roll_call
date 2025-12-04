@@ -1,10 +1,12 @@
 <script>
 	const baseURL = 'http://127.0.0.1:8000';
 
+	let otpSent = true;
+
 	let warningEmail = null;
 	let errorEmail = null;
 
-	let formEmail = null;
+	let formEmail = 'email@example.com';
 
 	async function submitEmail(email) {
 		if (email === null || email === '' || !email) {
@@ -34,31 +36,58 @@
 </script>
 
 <div class="flex flex-col h-screen items-center">
-	<div class="my-12"></div>
+	<div class="my-2"></div>
 	<div class="mx-auto">
-		<h1 class="font-bold text-6xl text-center">RollCall</h1>
+		<h1 class="font-bold text-xl text-center">RollCall</h1>
 	</div>
 
-	{#if errorEmail === null && warningEmail === null}
+	{#if otpSent === true}
 		<div class="my-12"></div>
+		<h2 class="font-bold text-2xl my-2 text-center">We emailed you an OTP</h2>
+		<div class="px-6 text-center">
+			<p>
+				We’ve sent an email to <strong>{formEmail}</strong>, enter the OTP here.
+			</p>
+		</div>
+
+		<div class="mx-auto my-6 px-6">
+			<input
+				type="number"
+				class="input validator text-center w-full"
+				required
+				placeholder="OTP"
+				min="6"
+				max="6"
+				title="OTP is 6 digits long and comprised of numbers"
+			/>
+			<p class="validator-hint">6 digit OTP</p>
+			<button class="btn btn-primary w-full">Submit</button>
+		</div>
+
+		<p class="text-sm">If you can’t see the email, check your spam or junk folder.</p>
+		<p>Can't find your code? <button>Request a new OTP</button></p>
 	{:else}
-		<div class="my-5"></div>
-	{/if}
+		{#if errorEmail === null && warningEmail === null}
+			<div class="my-12"></div>
+		{:else}
+			<div class="my-5"></div>
+		{/if}
 
-	{#if warningEmail}
-		<div role="alert" class="alert alert-warning alert-soft mb-2">
-			<span>{warningEmail}</span>
-		</div>
-	{/if}
-	{#if errorEmail}
-		<div role="alert" class="alert alert-error alert-soft mb-2">
-			<span>{errorEmail}</span>
-		</div>
-	{/if}
+		{#if warningEmail}
+			<div role="alert" class="alert alert-warning alert-soft mb-2">
+				<span>{warningEmail}</span>
+			</div>
+		{/if}
+		{#if errorEmail}
+			<div role="alert" class="alert alert-error alert-soft mb-2">
+				<span>{errorEmail}</span>
+			</div>
+		{/if}
 
-	<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-		<input type="email" bind:value={formEmail} class="input" placeholder="Email" />
+		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+			<input type="email" bind:value={formEmail} class="input" placeholder="Email" />
 
-		<button class="btn btn-primary mt-4" onclick={submitEmail(formEmail)}>Login</button>
-	</fieldset>
+			<button class="btn btn-primary mt-4" onclick={submitEmail(formEmail)}>Login</button>
+		</fieldset>
+	{/if}
 </div>
