@@ -1,12 +1,12 @@
 <script>
 	const baseURL = 'http://127.0.0.1:8000';
 
-	let otpSent = true;
+	let otpSent = false;
 
 	let warningEmail = null;
 	let errorEmail = null;
 
-	let formEmail = 'email@example.com';
+	let formEmail = null;
 
 	async function submitEmail(email) {
 		if (email === null || email === '' || !email) {
@@ -88,10 +88,11 @@
 			</div>
 		{/if}
 
-		<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-			<input type="email" bind:value={formEmail} class="input" placeholder="Email" />
+		<h2 class="font-bold text-2xl my-2 text-center">Enter your email address to sign in</h2>
 
-			<button class="btn btn-primary mt-4" onclick={submitEmail(formEmail)}>Login</button>
-		</fieldset>
+		<div class="my-6 px-6">
+			<input type="email" bind:value={formEmail} class="input" placeholder="Email" />
+			<button class="btn btn-primary mt-4 w-full" onclick={submitEmail(formEmail)}>Login</button>
+		</div>
 	{/if}
 </div>
