@@ -50,22 +50,26 @@
 			</p>
 		</div>
 
-		<div class="mx-auto my-6 px-6">
+		<div class="flex flex-col my-6 px-6">
 			<input
-				type="number"
-				class="input validator text-center w-full"
+				type="text"
+				inputmode="numeric"
+				class="input validator text-center text-xl py-6"
 				required
 				placeholder="OTP"
-				min="6"
-				max="6"
+				maxlength="6"
 				title="OTP is 6 digits long and comprised of numbers"
 			/>
 			<p class="validator-hint">6 digit OTP</p>
 			<button class="btn btn-primary w-full">Submit</button>
 		</div>
 
-		<p class="text-sm">If you can’t see the email, check your spam or junk folder.</p>
-		<p>Can't find your code? <button>Request a new OTP</button></p>
+		<p class="text-sm mx-8">If you can’t see the email, check your spam or junk folder.</p>
+		<p>
+			Can't find your code? <button class="btn-link" onclick={submitEmail(formEmail)}
+				>Request a new OTP</button
+			>
+		</p>
 	{:else}
 		{#if errorEmail === null && warningEmail === null}
 			<div class="my-12"></div>
@@ -74,12 +78,12 @@
 		{/if}
 
 		{#if warningEmail}
-			<div role="alert" class="alert alert-warning alert-soft mb-2">
+			<div role="alert" class="alert alert-warning alert-outline mb-2">
 				<span>{warningEmail}</span>
 			</div>
 		{/if}
 		{#if errorEmail}
-			<div role="alert" class="alert alert-error alert-soft mb-2">
+			<div role="alert" class="alert alert-error alert-outline mb-2">
 				<span>{errorEmail}</span>
 			</div>
 		{/if}
