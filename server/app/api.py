@@ -13,8 +13,7 @@ api = NinjaAPI()
 
 @api.post("/login/otp/send/")
 def login_otp_send(request, data: schema.EmailSchema):
-    print("login_otp_send")
-    print(data)
+    # TODO: Email validation
 
     pin = services.generate_pin()
 
