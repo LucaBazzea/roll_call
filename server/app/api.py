@@ -6,7 +6,7 @@ from django.core.cache import cache
 from ninja import NinjaAPI
 from ninja.responses import Response
 
-from app import models, schema, services
+from app import models, schema, services, selectors
 
 
 api = NinjaAPI()
@@ -51,8 +51,7 @@ def login_otp_validate(request, data: schema.EmailPinSchema):
 
 @api.get("/user/")
 def user(request, data):
-    # user_id = request.session.get("user_id")
-    user_id = 1
+    user_id = request.session.get("user_id")
 
     try:
         models.User.objects.get(user_id=user_id).exists()
@@ -97,11 +96,27 @@ def user(request, data):
 
     return response
 
+@api.get("/user/gyms/")
+def user_gyms(request, data):
+    #user_id = request.session.get("user_id")
+    user_id = 1
+
+    try:
+        gyms = selectors.get_gyms_by_user(user_id=user_id).values("gym__id", "gym__name")
+    except models.GymMember.DoesNotExist:
+        return Response({"message": "User not associated any gyms"}, status=404)
+
+    context = {}
+
+    for gym in gyms:
+        context[gym["id"]] = {"name": gym["name"]}
+
+    # request.session["gym_id"] = gym.id
+    return Response(context, status=200)
 
 @api.get("/gym/member/")
 def gym_member(request, data):
-    # user_id = request.session.get("user_id")
-    user_id = 1
+    user_id = request.session.get("user_id")
 
     try:
         user = models.GymMember.objects.get(user_id=user_id, gym_id=data.gym_id).values("role")
